@@ -127,7 +127,7 @@ export default function LandingPage() {
                   delay={0}
                 />
                 <div className="text-white/90">
-                  <h2 className="text-base font-semibold text-white mb-3 text-center">User Pay</h2>
+                  <h2 className="text-base font-semibold text-white mb-3 text-center">User Pays</h2>
                   
                   <div className="space-y-2 mb-3">
                 {/* HBAR Payment */}
@@ -348,7 +348,7 @@ export default function LandingPage() {
                   delay={2}
                 />
                 <div className="text-white/90">
-              <h2 className="text-base font-semibold text-white mb-3 text-center">Merchant Receive</h2>
+              <h2 className="text-base font-semibold text-white mb-3 text-center">Merchant Receives</h2>
               
               <div className="space-y-2 mb-3">
                 {/* ETH Received */}
