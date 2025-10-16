@@ -267,28 +267,22 @@ body {
   }
 }
 
-/* RainbowKit glassmorphism is now handled via proper theme API in _app.js */
+/* RainbowKit account modal - Match network modal style */
+/* Target ONLY account modal (has Copy/Disconnect buttons) */
 
-/* Fallback CSS for profile modal glassmorphism if theme properties aren't enough */
-[data-rk] div[role="dialog"]:has([data-testid*="profile"]),
-[data-rk] div[role="dialog"]:has([data-testid*="account"]),
-[data-rk] div[role="dialog"]:has(button[aria-label*="Disconnect"]) {
-  background: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(24px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+/* Override white backgrounds in account modal with same style as network modal */
+div[data-rk] div[role="dialog"]:has(button[aria-label*="Copy"]) > div,
+div[data-rk] div[role="dialog"]:has(button[aria-label*="Copy"]) > div > div,
+div[data-rk] div[role="dialog"]:has(button[aria-label*="Disconnect"]) > div,
+div[data-rk] div[role="dialog"]:has(button[aria-label*="Disconnect"]) > div > div {
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
-/* Profile modal buttons glassmorphism */
-[data-rk] div[role="dialog"] button[aria-label*="Disconnect"],
-[data-rk] div[role="dialog"] button[aria-label*="Copy"] {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  backdrop-filter: blur(10px) !important;
-}
-
-/* Profile modal text visibility */
-[data-rk] div[role="dialog"]:has(button[aria-label*="Disconnect"]) * {
-  color: rgba(255, 255, 255, 0.95) !important;
+/* Ensure text is white/visible in account modal */
+div[data-rk] div[role="dialog"]:has(button[aria-label*="Copy"]) *,
+div[data-rk] div[role="dialog"]:has(button[aria-label*="Disconnect"]) * {
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 /* Custom slider styling for glassmorphism theme */

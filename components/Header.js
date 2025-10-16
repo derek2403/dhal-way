@@ -43,7 +43,7 @@ export const Header = ({ showNavigation = false }) => {
       
       {/* Navigation - Absolutely centered */}
       {showNavigation && (
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute left-1/2 -translate-x-1/2">
           <FloatingDock 
             items={navItems}
             desktopClassName="bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"

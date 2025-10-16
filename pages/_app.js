@@ -134,6 +134,7 @@ if (typeof window !== 'undefined') {
 }
 
 // Create custom glassmorphism theme for RainbowKit modals
+// This theme applies to both network selection and account modals
 const glassmorphismTheme = darkTheme({
   accentColor: 'rgba(255, 255, 255, 0.15)',
   accentColorForeground: 'white',
@@ -142,33 +143,49 @@ const glassmorphismTheme = darkTheme({
   overlayBlur: 'large',
 });
 
-// Stronger glassmorphism styling for better visibility
-glassmorphismTheme.colors.modalBackground = 'rgba(255, 255, 255, 0.15)';  // More visible glassmorphism
+// Modal background and borders - lighter for network modal
+glassmorphismTheme.colors.modalBackground = 'rgba(255, 255, 255, 0.15)';
 glassmorphismTheme.colors.modalBorder = 'rgba(255, 255, 255, 0.3)';
 glassmorphismTheme.colors.modalText = 'rgba(255, 255, 255, 0.95)';
+glassmorphismTheme.colors.modalTextDim = 'rgba(255, 255, 255, 0.7)';
 glassmorphismTheme.colors.modalTextSecondary = 'rgba(255, 255, 255, 0.85)';
 
-// Close button to match glassmorphism
+// Modal backdrop overlay
+glassmorphismTheme.colors.modalBackdrop = 'rgba(0, 0, 0, 0.5)';
+
+// Close button styling
 glassmorphismTheme.colors.closeButton = 'rgba(255, 255, 255, 0.3)';
 glassmorphismTheme.colors.closeButtonBackground = 'rgba(255, 255, 255, 0.1)';
 
-// All glassmorphism theme properties (cleaned up - no duplicates)
+// Menu items for network selection
 glassmorphismTheme.colors.menuItemBackground = 'rgba(255, 255, 255, 0.1)';
+glassmorphismTheme.colors.actionButtonBorder = 'rgba(255, 255, 255, 0.2)';
+glassmorphismTheme.colors.actionButtonSecondaryBackground = 'rgba(255, 255, 255, 0.1)';
+
+// Profile/Account modal - match network modal style
 glassmorphismTheme.colors.profileAction = 'rgba(255, 255, 255, 0.1)';
 glassmorphismTheme.colors.profileActionHover = 'rgba(255, 255, 255, 0.2)';
-glassmorphismTheme.colors.profileForeground = 'rgba(255, 255, 255, 0.95)';
+glassmorphismTheme.colors.profileForeground = 'rgba(255, 255, 255, 0.15)';
+
+// Connect button styling
 glassmorphismTheme.colors.connectButtonBackground = 'rgba(255, 255, 255, 0.12)';
 glassmorphismTheme.colors.connectButtonText = 'rgba(255, 255, 255, 0.95)';
+glassmorphismTheme.colors.connectButtonInnerBackground = 'rgba(255, 255, 255, 0.08)';
+
+// General borders and error states
 glassmorphismTheme.colors.generalBorder = 'rgba(255, 255, 255, 0.2)';
+glassmorphismTheme.colors.generalBorderDim = 'rgba(255, 255, 255, 0.1)';
 glassmorphismTheme.colors.error = 'rgba(239, 68, 68, 0.9)';
 
-// Enhanced backdrop effects and shadows for all modals
+// Enhanced backdrop blur for all modals
 if (glassmorphismTheme.blurs) {
   glassmorphismTheme.blurs.modalOverlay = 'blur(24px)';
 }
 
-// Only use confirmed valid RainbowKit theme properties
-// Invalid properties cause runtime errors, so rely on CSS fallback for profile modal
+// Modal shadow for depth
+if (glassmorphismTheme.shadows) {
+  glassmorphismTheme.shadows.dialog = '0 8px 32px rgba(0, 0, 0, 0.3)';
+}
 
 export default function App({ Component, pageProps }) {
   return (

@@ -105,8 +105,8 @@ export default function LandingPage() {
       </Head>
 
       <AuroraBackground className="relative isolate grid h-dvh grid-rows-[auto,1fr] overflow-hidden bg-black">
-        {/* Main Heading - Clear positioning */}
-        <div className="pointer-events-none absolute top-1/4 left-0 right-0 flex items-center justify-center z-30">
+        {/* Main Heading - Centered between navbar and cards */}
+        <div className="pointer-events-none absolute top-[20%] left-0 right-0 flex items-center justify-center z-30">
             <h1 className="text-lg md:text-2xl lg:text-5xl font-black text-center max-w-4xl leading-tight text-white">
             Any tokens. Any chains. Both ways.
           </h1>
@@ -127,7 +127,7 @@ export default function LandingPage() {
                   delay={0}
                 />
                 <div className="text-white/90">
-                  <h2 className="text-base font-semibold text-white mb-3 text-center">User Pay</h2>
+                  <h2 className="text-base font-semibold text-white mb-3 text-center">User Pays</h2>
                   
                   <div className="space-y-2 mb-3">
                 {/* HBAR Payment */}
@@ -348,7 +348,7 @@ export default function LandingPage() {
                   delay={2}
                 />
                 <div className="text-white/90">
-              <h2 className="text-base font-semibold text-white mb-3 text-center">Merchant Receive</h2>
+              <h2 className="text-base font-semibold text-white mb-3 text-center">Merchant Receives</h2>
               
               <div className="space-y-2 mb-3">
                 {/* ETH Received */}
