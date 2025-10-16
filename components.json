@@ -18,5 +18,9 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "registries": {}
+  "registries": {
+    "@aceternity": "https://api.aceternity.com/api/registry/{name}.json",
+    "@magicui": "https://magicui.design/r/{name}.json",
+    "@reactbits": "https://reactbits.dev/r/{name}.json"
+  }
 }
