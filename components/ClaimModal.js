@@ -43,7 +43,7 @@ const TokenWithChain = ({ tokenSrc, chainSrc, tokenAlt, chainAlt }) => (
   </div>
 )
 
-const QRDisplay = ({ 
+const ClaimModal = ({ 
   showQRModal,
   setShowQRModal,
   qrDataUrl, 
@@ -243,13 +243,14 @@ const QRDisplay = ({
               className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15, duration: 0.2 }}
+              transition={{ delay: 0.05, duration: 0.15 }}
             >
               <motion.button
                 onClick={() => setShowQRModal(false)}
-                className="px-6 py-2.5 bg-white/10 text-white/80 rounded-lg hover:bg-white/20 transition-all duration-200 font-medium border border-white/20 hover:border-white/40 text-sm flex items-center justify-center space-x-2"
+                className="px-6 py-2.5 bg-white/10 text-white/80 rounded-lg hover:bg-white/20 transition-all duration-150 font-medium border border-white/20 hover:border-white/40 text-sm flex items-center justify-center space-x-2"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.1 }}
               >
                 <X className="w-4 h-4" />
                 <span>Close</span>
@@ -257,13 +258,14 @@ const QRDisplay = ({
               <motion.button
                 onClick={handleWithdrawAll}
                 disabled={isWithdrawing || !isConnected}
-                className={`px-6 py-2.5 border text-white rounded-lg transition-all duration-200 font-medium backdrop-blur-sm text-sm flex items-center justify-center space-x-2 ${
+                className={`px-6 py-2.5 border text-white rounded-lg transition-all duration-150 font-medium backdrop-blur-sm text-sm flex items-center justify-center space-x-2 ${
                   isWithdrawing || !isConnected
                     ? 'bg-gray-500/20 border-gray-500/30 cursor-not-allowed'
                     : 'bg-green-600/20 border-green-500/30 hover:bg-green-500/30 hover:border-green-400/40'
                 }`}
                 whileHover={!isWithdrawing && isConnected ? { scale: 1.02 } : {}}
                 whileTap={!isWithdrawing && isConnected ? { scale: 0.98 } : {}}
+                transition={{ duration: 0.1 }}
               >
                 {isWithdrawing ? (
                   <>
@@ -286,4 +288,4 @@ const QRDisplay = ({
   )
 }
 
-export default QRDisplay
+export default ClaimModal

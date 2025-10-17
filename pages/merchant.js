@@ -11,7 +11,7 @@ import PortfolioChart from '@/components/PortfolioChart'
 import TokenGrid from '@/components/TokenGrid'
 import PortfolioSummary from '@/components/PortfolioSummary'
 import TokenModal from '@/components/TokenModal'
-import QRDisplay from '@/components/QRDisplay'
+import ClaimModal from '@/components/ClaimModal'
 import SimpleQRDisplay from '@/components/SimpleQRDisplay'
 import SuccessClaimModal from '@/components/SuccessClaimModal'
 import { useEscrowView } from '../hooks/useEscrowView'
@@ -593,7 +593,7 @@ const MerchantPage = () => {
         addTokenToPortfolio={addPaymentPreference}
       />
       
-      <QRDisplay
+      <ClaimModal
         showQRModal={showQRModal}
         setShowQRModal={setShowQRModal}
         qrDataUrl={qrDataUrl}
