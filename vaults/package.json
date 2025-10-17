@@ -1,0 +1,21 @@
+{
+  "name": "smart-vaults",
+  "version": "1.0.0",
+  "scripts": {
+    "deploy-all": "node scripts/deployAllChains.js",
+    "deploy:arbi": "hardhat run scripts/deployAll.js --network arbitrumSepolia",
+    "deploy:base": "hardhat run scripts/deployAll.js --network baseSepolia",
+    "deploy:sepolia": "hardhat run scripts/deployAll.js --network sepolia",
+    "deploy:op": "hardhat run scripts/deployAll.js --network optimismSepolia",
+    "deploy:flow": "hardhat run scripts/deployAll.js --network flowTestnet",
+    "liquidity": "hardhat run scripts/addLiquidity.js"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1",
+    "dotenv": "^16.3.1"
+  }
+}

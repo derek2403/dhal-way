@@ -4,6 +4,9 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "demo:arbi": "hardhat run scripts/demoPayment.ts --network arbitrum-sepolia",
+    "demo:base": "hardhat run scripts/demoPayment.ts --network base-sepolia",
+    "demo:summary": "hardhat run scripts/demoComplete.ts --network arbitrum-sepolia",
     "clean": "rm -rf artifacts cache out",
     "compile": "concurrently -c auto --names forge,hardhat '$npm_execpath run compile:forge' '$npm_execpath run compile:hardhat'",
     "compile:forge": "forge build",
