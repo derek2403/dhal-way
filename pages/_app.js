@@ -58,7 +58,7 @@ import {
 const config = getDefaultConfig({
   appName: 'dhal-way',
   projectId: '1',
-  chains: [sepolia, flowEVMTestnet, hederaTestnet, mainnet, polygon, optimismSepolia, arbitrumSepolia, base],
+  chains: [sepolia, flowEVMTestnet, hederaTestnet, mainnet, polygon, optimismSepolia, arbitrumSepolia, arbitrum, base],
   ssr: true,
 });
 
