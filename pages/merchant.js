@@ -51,7 +51,7 @@ const MerchantPage = () => {
   const chains = [
     { id: 'sepolia', name: 'Sepolia', icon: '/icons/ethereum-eth-logo.svg' },
     { id: 'flow', name: 'Flow', icon: '/icons/flow-flow-logo.svg' },
-    { id: 'hedera', name: 'Hedera', icon: '/icons/hedera-hbar-logo.svg' },
+    { id: 'base', name: 'Base', icon: '/icons/base.png' },
     { id: 'optimism', name: 'Optimism', icon: '/icons/optimism-ethereum-op-logo.svg' },
     { id: 'polygon', name: 'Polygon', icon: '/icons/polygon-matic-logo.svg' },
     { id: 'arbitrum', name: 'Arbitrum', icon: '/icons/arbitrum-arb-logo.svg' }
@@ -88,8 +88,8 @@ const MerchantPage = () => {
     flow: [
       { name: 'FLOW', fullName: 'Flow', icon: '/icons/flow-flow-logo.svg', chartColor: '#6B7280' }
     ],
-    hedera: [
-      { name: 'HBAR', fullName: 'Hedera Hashgraph', icon: '/icons/hedera-hbar-logo.svg', chartColor: '#9CA3AF' },
+    base: [
+      { name: 'ETH', fullName: 'Ethereum', icon: '/icons/ethereum-eth-logo.svg', chartColor: '#9CA3AF' },
       { name: 'USDC', fullName: 'USD Coin', icon: '/icons/usd-coin-usdc-logo.svg', chartColor: '#6B7280' }
     ]
   }

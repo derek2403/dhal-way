@@ -34,16 +34,16 @@ const flowEVMTestnet = {
   testnet: true
 };
 
-const hederaTestnet = {
-  id: 296,
-  name: 'Hedera Testnet',
-  nativeCurrency: { name: 'HBAR', symbol: 'HBAR', decimals: 18 },
+const baseTestnet = {
+  id: 84532,
+  name: 'Base Sepolia',
+  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://testnet.hashio.io/api'] },
-    public: { http: ['https://testnet.hashio.io/api'] }
+    default: { http: ['https://sepolia.base.org'] },
+    public: { http: ['https://sepolia.base.org'] }
   },
   blockExplorers: {
-    default: { name: 'HashScan', url: 'https://hashscan.io/testnet' }
+    default: { name: 'BaseScan', url: 'https://sepolia.basescan.org' }
   },
   testnet: true
 };
@@ -58,7 +58,7 @@ import {
 const config = getDefaultConfig({
   appName: 'dhal-way',
   projectId: '1',
-  chains: [sepolia, flowEVMTestnet, hederaTestnet, mainnet, polygon, optimismSepolia, arbitrumSepolia, base],
+  chains: [sepolia, flowEVMTestnet, baseTestnet, mainnet, polygon, optimismSepolia, arbitrumSepolia, base],
   ssr: true,
 });
 
