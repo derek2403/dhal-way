@@ -73,6 +73,14 @@ contract WAYToken is OFT {
     }
 
     /**
+     * @notice Override decimals to match USDC (6 decimals)
+     * @dev CRITICAL: WAY must have same decimals as USDC for 1:1 conversion!
+     */
+    function decimals() public pure override returns (uint8) {
+        return 6; // Same as USDC!
+    }
+
+    /**
      * @notice Mint WAY tokens (requires USDC deposit)
      * @dev Uses normal ERC20 transferFrom - NO adapter needed!
      * @param to Recipient of WAY tokens
