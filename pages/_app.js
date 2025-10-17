@@ -143,8 +143,8 @@ const glassmorphismTheme = darkTheme({
   overlayBlur: 'large',
 });
 
-// Modal background and borders - lighter for network modal
-glassmorphismTheme.colors.modalBackground = 'rgba(255, 255, 255, 0.15)';
+// Modal background and borders - more transparent for all modals
+glassmorphismTheme.colors.modalBackground = 'rgba(255, 255, 255, 0.08)';
 glassmorphismTheme.colors.modalBorder = 'rgba(255, 255, 255, 0.3)';
 glassmorphismTheme.colors.modalText = 'rgba(255, 255, 255, 0.95)';
 glassmorphismTheme.colors.modalTextDim = 'rgba(255, 255, 255, 0.7)';
@@ -162,10 +162,10 @@ glassmorphismTheme.colors.menuItemBackground = 'rgba(255, 255, 255, 0.1)';
 glassmorphismTheme.colors.actionButtonBorder = 'rgba(255, 255, 255, 0.2)';
 glassmorphismTheme.colors.actionButtonSecondaryBackground = 'rgba(255, 255, 255, 0.1)';
 
-// Profile/Account modal - match network modal style
-glassmorphismTheme.colors.profileAction = 'rgba(255, 255, 255, 0.1)';
-glassmorphismTheme.colors.profileActionHover = 'rgba(255, 255, 255, 0.2)';
-glassmorphismTheme.colors.profileForeground = 'rgba(255, 255, 255, 0.15)';
+// Profile/Account modal - more transparent to match network modal
+glassmorphismTheme.colors.profileAction = 'rgba(255, 255, 255, 0.05)';
+glassmorphismTheme.colors.profileActionHover = 'rgba(255, 255, 255, 0.12)';
+glassmorphismTheme.colors.profileForeground = 'rgba(255, 255, 255, 0.08)';
 
 // Connect button styling
 glassmorphismTheme.colors.connectButtonBackground = 'rgba(255, 255, 255, 0.12)';

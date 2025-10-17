@@ -267,21 +267,40 @@ body {
   }
 }
 
-/* RainbowKit account modal - Match network modal style */
-/* Target ONLY account modal (has Copy/Disconnect buttons) */
+/* RainbowKit modals - More transparent glassmorphism */
 
-/* Override white backgrounds in account modal with same style as network modal */
-div[data-rk] div[role="dialog"]:has(button[aria-label*="Copy"]) > div,
-div[data-rk] div[role="dialog"]:has(button[aria-label*="Copy"]) > div > div,
-div[data-rk] div[role="dialog"]:has(button[aria-label*="Disconnect"]) > div,
-div[data-rk] div[role="dialog"]:has(button[aria-label*="Disconnect"]) > div > div {
+/* Make ALL modal backgrounds more transparent */
+div[data-rk] div[role="dialog"] {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+}
+
+/* Make ALL nested elements in modals transparent */
+div[data-rk] div[role="dialog"] div {
   background: transparent !important;
   background-color: transparent !important;
 }
 
-/* Ensure text is white/visible in account modal */
-div[data-rk] div[role="dialog"]:has(button[aria-label*="Copy"]) *,
-div[data-rk] div[role="dialog"]:has(button[aria-label*="Disconnect"]) * {
+/* Network/Chain selection buttons - increased spacing */
+div[data-rk] div[role="dialog"] button[type="button"] {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  margin-bottom: 3px !important;
+}
+
+/* Remove margin from last button */
+div[data-rk] div[role="dialog"] button[type="button"]:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Button hover states */
+div[data-rk] div[role="dialog"] button[type="button"]:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Ensure text is white/visible in all modals */
+div[data-rk] div[role="dialog"] * {
   color: rgba(255, 255, 255, 0.9) !important;
 }
 
