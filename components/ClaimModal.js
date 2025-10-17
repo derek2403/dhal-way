@@ -172,14 +172,14 @@ const ClaimModal = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
       >
         <div className="text-center space-y-6">
         <motion.div 
           className="space-y-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05, duration: 0.6 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
         >
           <h3 className="text-xl font-bold text-white/90">Payment Claim Summary</h3>
           <p className="text-lg text-white/80 font-medium">Review your preferences and claim funds from both chains</p>
@@ -191,7 +191,7 @@ const ClaimModal = ({
             className="flex flex-col items-center space-y-5"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.6 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
           >
           
             {/* Portfolio Summary */}
@@ -243,7 +243,7 @@ const ClaimModal = ({
               className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05, duration: 0.15 }}
+              transition={{ delay: 0.3, duration: 0.3 }}
             >
               <motion.button
                 onClick={() => setShowQRModal(false)}
