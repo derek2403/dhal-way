@@ -59,13 +59,14 @@ const SimpleQRDisplay = ({
                 className="flex space-x-3 w-full"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.4 }}
+                transition={{ delay: 0.3, duration: 0.3 }}
               >
                 <motion.button
                   onClick={() => setShowSimpleQRModal(false)}
-                  className="flex-1 px-4 py-2.5 bg-white/10 text-white/80 rounded-lg hover:bg-white/20 transition-all duration-200 font-medium border border-white/20 hover:border-white/40 text-sm flex items-center justify-center space-x-2"
+                  className="flex-1 px-4 py-2.5 bg-white/10 text-white/80 rounded-lg hover:bg-white/20 transition-all duration-150 font-medium border border-white/20 hover:border-white/40 text-sm flex items-center justify-center space-x-2"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.1 }}
                 >
                   <X className="w-4 h-4" />
                   <span>Close</span>
@@ -77,9 +78,10 @@ const SimpleQRDisplay = ({
                     link.href = qrDataUrl
                     link.click()
                   }}
-                  className="flex-1 px-4 py-2.5 bg-white/20 border border-white/30 text-white rounded-lg hover:bg-white/30 transition-all duration-200 font-medium backdrop-blur-sm text-sm flex items-center justify-center space-x-2"
+                  className="flex-1 px-4 py-2.5 bg-white/20 border border-white/30 text-white rounded-lg hover:bg-white/30 transition-all duration-150 font-medium backdrop-blur-sm text-sm flex items-center justify-center space-x-2"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.1 }}
                 >
                   <Download className="w-4 h-4" />
                   <span>Download</span>
