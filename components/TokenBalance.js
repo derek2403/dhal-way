@@ -40,11 +40,22 @@ const TokenRow = ({ token, chain, userAddress, transferAmounts, onTransferAmount
   const { balance, isLoading, error } = useTokenBalance(chain.chainId, token.address, userAddress);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
   
+  // Track raw cents value for calculator-style input (e.g., 150 = $1.50)
+  const [rawCents, setRawCents] = useState(0);
+  
   const balanceFormatted = formatBalance(balance, token.decimals);
   const balanceNum = parseFloat(balanceFormatted);
   
   const transferKey = createTransferKey(token.symbol, chain.chainId);
   const transferAmount = transferAmounts[transferKey] || 0;
+  
+  // Sync rawCents with transferAmount when it changes externally (e.g., from slider)
+  useEffect(() => {
+    const price = tokenPrice?.price || 0;
+    const usdAmount = transferAmount * price;
+    const cents = Math.round(usdAmount * 100);
+    setRawCents(cents);
+  }, [transferAmount, tokenPrice]);
 
   // Set timeout for loading state
   useEffect(() => {
@@ -120,25 +131,56 @@ const TokenRow = ({ token, chain, userAddress, transferAmounts, onTransferAmount
     onTransferAmountChange(token.symbol, chain.chainId, newAmount);
   };
 
-  const handleUsdInputChange = (usdAmount) => {
-    if (price > 0 && balanceNum > 0) {
-      // If payment limit is set, check if new amount would exceed limit
-      if (maxPaymentAmount) {
-        const currentAmountUSD = transferAmount * price;
-        const remainingBudget = maxPaymentAmount - currentTotalUSD + currentAmountUSD;
-        const cappedUsdAmount = Math.min(usdAmount, remainingBudget);
-        const tokenAmount = cappedUsdAmount / price;
-        const finalAmount = Math.min(Math.max(0, tokenAmount), balanceNum);
-        onTransferAmountChange(token.symbol, chain.chainId, finalAmount);
-      } else {
-        const tokenAmount = usdAmount / price;
-        // Ensure we don't exceed available balance
-        const cappedAmount = Math.min(Math.max(0, tokenAmount), balanceNum);
-        onTransferAmountChange(token.symbol, chain.chainId, cappedAmount);
+  // Calculator-style input handler: digits accumulate from the right
+  const handleKeyDown = (e) => {
+    const price = tokenPrice?.price || 0;
+    if (price === 0) return;
+
+    // Handle number keys (0-9)
+    if (e.key >= '0' && e.key <= '9') {
+      e.preventDefault();
+      const digit = parseInt(e.key);
+      
+      // Append digit to the right (multiply by 10 and add new digit)
+      const newCents = rawCents * 10 + digit;
+      
+      // Check if this would exceed limits
+      const newUsdAmount = newCents / 100;
+      const currentAmountUSD = transferAmount * price;
+      const remainingBudget = maxPaymentAmount ? maxPaymentAmount - currentTotalUSD + currentAmountUSD : Infinity;
+      
+      if (newUsdAmount > remainingBudget) {
+        return; // Don't allow exceeding payment limit
       }
-    } else if (usdAmount === 0) {
-      // Reset to 0 when input is cleared
+      
+      const newTokenAmount = newUsdAmount / price;
+      if (newTokenAmount > balanceNum) {
+        return; // Don't allow exceeding balance
+      }
+      
+      setRawCents(newCents);
+      onTransferAmountChange(token.symbol, chain.chainId, newTokenAmount);
+    }
+    // Handle Backspace
+    else if (e.key === 'Backspace') {
+      e.preventDefault();
+      // Remove the rightmost digit (divide by 10 and floor)
+      const newCents = Math.floor(rawCents / 10);
+      const newUsdAmount = newCents / 100;
+      const newTokenAmount = newUsdAmount / price;
+      
+      setRawCents(newCents);
+      onTransferAmountChange(token.symbol, chain.chainId, newTokenAmount);
+    }
+    // Handle Delete or Clear
+    else if (e.key === 'Delete' || e.key === 'Clear') {
+      e.preventDefault();
+      setRawCents(0);
       onTransferAmountChange(token.symbol, chain.chainId, 0);
+    }
+    // Prevent other keys
+    else if (e.key !== 'Tab' && e.key !== 'Enter' && e.key !== 'Escape') {
+      e.preventDefault();
     }
   };
 
@@ -202,31 +244,19 @@ const TokenRow = ({ token, chain, userAddress, transferAmounts, onTransferAmount
         </div>
       </div>
 
-      {/* USD Input - Responsive column */}
+      {/* USD Input - Calculator-style (digits accumulate from right) */}
       <div className="text-center md:text-right order-2 md:order-3">
         <div className="relative mb-2">
           <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-white font-semibold pointer-events-none">
             $
           </span>
           <input
-            type="number"
-            min="0"
-            max={
-              maxPaymentAmount 
-                ? Math.min(
-                    (balanceNum * price).toFixed(2),
-                    (maxPaymentAmount - currentTotalUSD + (transferAmount * price)).toFixed(2)
-                  )
-                : (balanceNum * price).toFixed(2)
-            }
-            step="0.01"
-            value={transferAmount * price ? (transferAmount * price).toFixed(2) : ''}
-            onChange={(e) => handleUsdInputChange(parseFloat(e.target.value) || 0)}
-            className="w-full sm:w-32 md:w-full pl-6 pr-2 py-2 text-sm font-semibold text-white bg-white/10 border border-white/20 rounded-lg text-right outline-none backdrop-blur-sm focus:border-white/40 focus:bg-white/15 transition-all"
-            style={{
-              WebkitAppearance: 'none',
-              MozAppearance: 'textfield'
-            }}
+            type="text"
+            inputMode="numeric"
+            value={(rawCents / 100).toFixed(2)}
+            onKeyDown={handleKeyDown}
+            onChange={(e) => e.preventDefault()} // Prevent typing directly, only use keyboard handler
+            className="w-full sm:w-32 md:w-full pl-6 pr-2 py-2 text-sm font-semibold text-white bg-white/10 border border-white/20 rounded-lg text-right outline-none backdrop-blur-sm focus:border-white/40 focus:bg-white/15 transition-all cursor-text"
             placeholder="0.00"
           />
         </div>
