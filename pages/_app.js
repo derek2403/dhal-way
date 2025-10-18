@@ -10,13 +10,14 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
-  mainnet as mainnetBase,
-  polygon as polygonBase,
-  arbitrum as arbitrumBase,
-  base as baseMainnetBase,
-  optimismSepolia as optimismSepoliaBase,
-  sepolia as sepoliaBase,
-  arbitrumSepolia as arbitrumSepoliaBase
+  mainnet,
+  polygon,
+  arbitrum,
+  base,
+  baseSepolia,
+  optimismSepolia,
+  sepolia,
+  arbitrumSepolia
 } from 'wagmi/chains';
 
 // Custom chain definitions for testnets with colored icons
@@ -96,7 +97,7 @@ import {
 const config = getDefaultConfig({
   appName: 'dhal-way',
   projectId: '1',
-  chains: [sepolia, flowEVMTestnet, baseTestnet, mainnet, polygon, optimismSepolia, arbitrumSepolia, base],
+  chains: [sepolia, flowEVMTestnet, hederaTestnet, mainnet, polygon, optimismSepolia, arbitrumSepolia, arbitrum, base, baseSepolia],
   ssr: true,
 });
 
