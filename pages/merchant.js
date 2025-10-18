@@ -49,7 +49,7 @@ const MerchantPage = () => {
 
   // Available chains with SVG icons
   const chains = [
-    { id: 'sepolia', name: 'Sepolia', icon: '/icons/ethereum-eth-logo.svg' },
+    { id: 'sepolia', name: 'Sepolia', icon: '/icons/ethereum-eth-logo-colored.svg' },
     { id: 'flow', name: 'Flow', icon: '/icons/flow-flow-logo.svg' },
     { id: 'base', name: 'Base', icon: '/icons/base.png' },
     { id: 'optimism', name: 'Optimism', icon: '/icons/optimism-ethereum-op-logo.svg' },
@@ -63,17 +63,17 @@ const MerchantPage = () => {
       { name: 'MATIC', fullName: 'Polygon', icon: '/icons/polygon-matic-logo.svg', chartColor: '#E5E7EB' },
       { name: 'USDC', fullName: 'USD Coin', icon: '/icons/usd-coin-usdc-logo.svg', chartColor: '#D1D5DB' },
       { name: 'USDT', fullName: 'Tether', icon: '/icons/tether-usdt-logo.svg', chartColor: '#9CA3AF' },
-      { name: 'WETH', fullName: 'Wrapped Ethereum', icon: '/icons/ethereum-eth-logo.svg', chartColor: '#6B7280' },
+      { name: 'WETH', fullName: 'Wrapped Ethereum', icon: '/icons/ethereum-eth-logo-colored.svg', chartColor: '#6B7280' },
       { name: 'DAI', fullName: 'Dai Stablecoin', icon: '/icons/multi-collateral-dai-dai-logo.svg', chartColor: '#4B5563' }
     ],
     optimism: [
-      { name: 'ETH', fullName: 'Ethereum', icon: '/icons/ethereum-eth-logo.svg', chartColor: '#E5E7EB' },
+      { name: 'ETH', fullName: 'Ethereum', icon: '/icons/ethereum-eth-logo-colored.svg', chartColor: '#E5E7EB' },
       { name: 'USDC', fullName: 'USD Coin', icon: '/icons/usd-coin-usdc-logo.svg', chartColor: '#D1D5DB' },
       { name: 'USDT', fullName: 'Tether', icon: '/icons/tether-usdt-logo.svg', chartColor: '#9CA3AF' },
       { name: 'WBTC', fullName: 'Wrapped Bitcoin', icon: '/icons/bitcoin-btc-logo.svg', chartColor: '#6B7280' }
     ],
     arbitrum: [
-      { name: 'ETH', fullName: 'Ethereum', icon: '/icons/ethereum-eth-logo.svg', chartColor: '#E5E7EB' },
+      { name: 'ETH', fullName: 'Ethereum', icon: '/icons/ethereum-eth-logo-colored.svg', chartColor: '#E5E7EB' },
       { name: 'PYUSD', fullName: 'PayPal USD', icon: '/icons/paypal-usd-pyusd-logo.svg', chartColor: '#D1D5DB' },
       { name: 'ARB', fullName: 'Arbitrum', icon: '/icons/arbitrum-arb-logo.svg', chartColor: '#9CA3AF' },
       { name: 'USDC', fullName: 'USD Coin', icon: '/icons/usd-coin-usdc-logo.svg', chartColor: '#6B7280' },
@@ -81,7 +81,7 @@ const MerchantPage = () => {
       { name: 'WBTC', fullName: 'Wrapped Bitcoin', icon: '/icons/bitcoin-btc-logo.svg', chartColor: '#374151' }
     ],
     sepolia: [
-      { name: 'ETH', fullName: 'Ethereum', icon: '/icons/ethereum-eth-logo.svg', chartColor: '#E5E7EB' },
+      { name: 'ETH', fullName: 'Ethereum', icon: '/icons/ethereum-eth-logo-colored.svg', chartColor: '#E5E7EB' },
       { name: 'PYUSD', fullName: 'PayPal USD', icon: '/icons/paypal-usd-pyusd-logo.svg', chartColor: '#D1D5DB' },
       { name: 'LINK', fullName: 'Chainlink', icon: '/icons/chainlink-link-logo.svg', chartColor: '#9CA3AF' }
     ],
@@ -89,7 +89,7 @@ const MerchantPage = () => {
       { name: 'FLOW', fullName: 'Flow', icon: '/icons/flow-flow-logo.svg', chartColor: '#6B7280' }
     ],
     base: [
-      { name: 'ETH', fullName: 'Ethereum', icon: '/icons/ethereum-eth-logo.svg', chartColor: '#9CA3AF' },
+      { name: 'ETH', fullName: 'Ethereum', icon: '/icons/ethereum-eth-logo-colored.svg', chartColor: '#9CA3AF' },
       { name: 'USDC', fullName: 'USD Coin', icon: '/icons/usd-coin-usdc-logo.svg', chartColor: '#6B7280' }
     ]
   }
@@ -115,7 +115,7 @@ const MerchantPage = () => {
         data.push(allocation)
         colors.push(token?.chartColor || '#4B5563')
         tokenInfo.push({
-          icon: token?.icon || '/icons/ethereum-eth-logo.svg',
+          icon: token?.icon || '/icons/ethereum-eth-logo-colored.svg',
           name: tokenName,
           chain: chainId
         })
@@ -304,14 +304,14 @@ const MerchantPage = () => {
     return (
       <div className="h-screen bg-black overflow-hidden relative">
         <Spotlight
-          gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .12) 0, hsla(0, 0%, 100%, .04) 50%, hsla(0, 0%, 100%, 0) 80%)"
-          gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .08) 0, hsla(0, 0%, 100%, .03) 80%, transparent 100%)"
-          gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .06) 0, hsla(0, 0%, 100%, .02) 80%, transparent 100%)"
+          gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, .10) 40%, hsla(0, 0%, 100%, 0) 70%)"
+          gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .18) 0, hsla(0, 0%, 100%, .08) 60%, transparent 90%)"
+          gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .15) 0, hsla(0, 0%, 100%, .06) 60%, transparent 90%)"
           translateY={-300}
           width={600}
           height={1200}
           smallWidth={300}
-          duration={6}
+          duration={9}
           xOffset={120}
         />
         <div className="relative z-10">
@@ -410,14 +410,14 @@ const MerchantPage = () => {
     <div className="h-screen bg-black overflow-hidden relative">
       <div className="absolute inset-0 z-0">
         <Spotlight
-          gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .12) 0, hsla(0, 0%, 100%, .04) 50%, hsla(0, 0%, 100%, 0) 80%)"
-          gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .08) 0, hsla(0, 0%, 100%, .03) 80%, transparent 100%)"
-          gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .06) 0, hsla(0, 0%, 100%, .02) 80%, transparent 100%)"
+          gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, .10) 40%, hsla(0, 0%, 100%, 0) 70%)"
+          gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .18) 0, hsla(0, 0%, 100%, .08) 60%, transparent 90%)"
+          gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .15) 0, hsla(0, 0%, 100%, .06) 60%, transparent 90%)"
           translateY={-300}
           width={600}
           height={1200}
           smallWidth={300}
-          duration={6}
+          duration={9}
           xOffset={120}
         />
       </div>

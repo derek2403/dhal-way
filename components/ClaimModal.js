@@ -215,8 +215,8 @@ const ClaimModal = ({
                             whileHover={{ y: -2 }}
                           >
                             <TokenWithChain 
-                              tokenSrc={tokenInfo?.icon || '/icons/ethereum-eth-logo.svg'}
-                              chainSrc={chainInfo?.icon || '/icons/ethereum-eth-logo.svg'}
+                              tokenSrc={tokenInfo?.icon || '/icons/ethereum-eth-logo-colored.svg'}
+                              chainSrc={chainInfo?.icon || '/icons/ethereum-eth-logo-colored.svg'}
                               tokenAlt={`${token} ${allocation}%`}
                               chainAlt={chainInfo?.name || chain}
                             />
