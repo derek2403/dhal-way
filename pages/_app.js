@@ -14,6 +14,7 @@ import {
   polygon,
   arbitrum,
   base,
+  baseSepolia,
   optimismSepolia,
   sepolia,
   arbitrumSepolia
@@ -58,7 +59,7 @@ import {
 const config = getDefaultConfig({
   appName: 'dhal-way',
   projectId: '1',
-  chains: [sepolia, flowEVMTestnet, hederaTestnet, mainnet, polygon, optimismSepolia, arbitrumSepolia, arbitrum, base],
+  chains: [sepolia, flowEVMTestnet, hederaTestnet, mainnet, polygon, optimismSepolia, arbitrumSepolia, arbitrum, base, baseSepolia],
   ssr: true,
 });
 
