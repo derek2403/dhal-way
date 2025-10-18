@@ -28,16 +28,16 @@ const CHAINS = {
     native: { symbol: 'FLOW', decimals: 18 },
     erc20s: [],
   },
-  hedera: {
-    chainId: 296, // Hedera Testnet
-    label: 'Hedera Testnet', 
-    key: 'hedera',
+  base: {
+    chainId: 84532, // Base Sepolia
+    label: 'Base Sepolia', 
+    key: 'base',
     escrow: '0x0772b7b4Dce613e75fde92e2bBfe351aE06ffc6b',
-    explorer: 'https://hashscan.io/testnet/transaction/',
-    atomicSupported: false, // Limited EIP-5792 support
-    native: { symbol: 'HBAR', decimals: 18 },
+    explorer: 'https://sepolia.basescan.org/tx/',
+    atomicSupported: true, // Full EIP-5792 support
+    native: { symbol: 'ETH', decimals: 18 },
     erc20s: [
-      { symbol: 'USDC', token: '0x1234567890123456789012345678901234567890', decimals: 6 }, // Placeholder - update with real address
+      { symbol: 'USDC', token: '0x0000000000000000000000000000000000000001', decimals: 6 }, // Placeholder - update with real address
     ],
   },
 };
