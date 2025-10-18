@@ -29,7 +29,7 @@ const PortfolioSummary = ({
               <div className="text-xs font-medium text-white/70 flex items-center gap-2 mb-1">
                 <div className="w-4 h-4 rounded-full bg-white/5 border border-white/10 flex items-center justify-center p-0.5">
                   <Image
-                    src={chains.find(c => c.id === chainId)?.icon || '/icons/ethereum-eth-logo.svg'}
+                    src={chains.find(c => c.id === chainId)?.icon || '/icons/ethereum-eth-logo-colored.svg'}
                     alt={chains.find(c => c.id === chainId)?.name || chainId}
                     width={12}
                     height={12}

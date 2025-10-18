@@ -41,7 +41,7 @@ const TokenModal = ({
             {/* Token Icon */}
             <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center p-3">
               <Image
-                src={tokensByChain[currentChain]?.find(t => t.name === selectedToken)?.icon || '/icons/ethereum-eth-logo.svg'}
+                src={tokensByChain[currentChain]?.find(t => t.name === selectedToken)?.icon || '/icons/ethereum-eth-logo-colored.svg'}
                 alt={selectedToken}
                 width={40}
                 height={40}
@@ -51,7 +51,7 @@ const TokenModal = ({
             {/* Mini Chain Icon Overlay */}
             <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-black/80 rounded-full p-1 border border-white/20 shadow-lg">
               <Image
-                src={chains.find(c => c.id === currentChain)?.icon || '/icons/ethereum-eth-logo.svg'}
+                src={chains.find(c => c.id === currentChain)?.icon || '/icons/ethereum-eth-logo-colored.svg'}
                 alt={chains.find(c => c.id === currentChain)?.name || currentChain}
                 width={16}
                 height={16}
