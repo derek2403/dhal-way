@@ -10,16 +10,16 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
-  mainnet,
-  polygon,
-  arbitrum,
-  base,
-  optimismSepolia,
-  sepolia,
-  arbitrumSepolia
+  mainnet as mainnetBase,
+  polygon as polygonBase,
+  arbitrum as arbitrumBase,
+  base as baseMainnetBase,
+  optimismSepolia as optimismSepoliaBase,
+  sepolia as sepoliaBase,
+  arbitrumSepolia as arbitrumSepoliaBase
 } from 'wagmi/chains';
 
-// Custom chain definitions for testnets
+// Custom chain definitions for testnets with colored icons
 const flowEVMTestnet = {
   id: 545,
   name: 'Flow EVM Testnet',
@@ -31,6 +31,7 @@ const flowEVMTestnet = {
   blockExplorers: {
     default: { name: 'Flow Diver', url: 'https://testnet.flowdiver.io' }
   },
+  iconUrl: '/icons/flow-flow-logo.svg',
   testnet: true
 };
 
@@ -45,7 +46,44 @@ const baseTestnet = {
   blockExplorers: {
     default: { name: 'BaseScan', url: 'https://sepolia.basescan.org' }
   },
+  iconUrl: '/icons/base.png',
   testnet: true
+};
+
+// Override default chains with colored Ethereum icons
+const sepolia = {
+  ...sepoliaBase,
+  iconUrl: '/icons/ethereum-eth-logo-colored.svg'
+};
+
+const arbitrumSepolia = {
+  ...arbitrumSepoliaBase,
+  iconUrl: '/icons/arbitrum-arb-logo.svg'
+};
+
+const optimismSepolia = {
+  ...optimismSepoliaBase,
+  iconUrl: '/icons/optimism-ethereum-op-logo.svg'
+};
+
+const mainnet = {
+  ...mainnetBase,
+  iconUrl: '/icons/ethereum-eth-logo-colored.svg'
+};
+
+const polygon = {
+  ...polygonBase,
+  iconUrl: '/icons/polygon-matic-logo.svg'
+};
+
+const arbitrum = {
+  ...arbitrumBase,
+  iconUrl: '/icons/arbitrum-arb-logo.svg'
+};
+
+const base = {
+  ...baseMainnetBase,
+  iconUrl: '/icons/base.png'
 };
 
 // React Query client for data fetching
