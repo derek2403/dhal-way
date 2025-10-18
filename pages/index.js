@@ -130,22 +130,22 @@ export default function LandingPage() {
                   <h2 className="text-base font-semibold text-white mb-3 text-center">User Pays</h2>
                   
                   <div className="space-y-2 mb-3">
-                {/* HBAR Payment */}
+                {/* ETH Payment on Base */}
                 <div className="flex items-center justify-between bg-white/5 rounded-lg p-2 border border-white/10">
                   <div className="flex items-center gap-2">
                     <TokenWithChain 
-                      tokenSrc="/icons/hedera-hbar-logo.svg" 
-                      chainSrc="/icons/hedera-hbar-logo.svg" 
-                      tokenAlt="HBAR" 
-                      chainAlt="Hedera"
+                      tokenSrc="/icons/ethereum-eth-logo-colored.svg" 
+                      chainSrc="/icons/base.png" 
+                      tokenAlt="ETH" 
+                      chainAlt="Base"
                     />
                     <div className="flex flex-col">
-                      <span className="text-white/90 text-sm font-medium">HBAR</span>
-                      <span className="text-white/50 text-xs">on Hedera</span>
+                      <span className="text-white/90 text-sm font-medium">ETH</span>
+                      <span className="text-white/50 text-xs">on Base</span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="text-white font-medium text-base">46.9 HBAR</span>
+                    <span className="text-white font-medium text-base">0.0024 ETH</span>
                     <span className="text-white/60 text-sm block">$10</span>
                   </div>
                 </div>

@@ -20,7 +20,7 @@ import {
   arbitrumSepolia
 } from 'wagmi/chains';
 
-// Custom chain definitions for testnets
+// Custom chain definitions for testnets with colored icons
 const flowEVMTestnet = {
   id: 545,
   name: 'Flow EVM Testnet',
@@ -32,21 +32,59 @@ const flowEVMTestnet = {
   blockExplorers: {
     default: { name: 'Flow Diver', url: 'https://testnet.flowdiver.io' }
   },
+  iconUrl: '/icons/flow-flow-logo.svg',
   testnet: true
 };
 
-const hederaTestnet = {
-  id: 296,
-  name: 'Hedera Testnet',
-  nativeCurrency: { name: 'HBAR', symbol: 'HBAR', decimals: 18 },
+const baseTestnet = {
+  id: 84532,
+  name: 'Base Sepolia',
+  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://testnet.hashio.io/api'] },
-    public: { http: ['https://testnet.hashio.io/api'] }
+    default: { http: ['https://sepolia.base.org'] },
+    public: { http: ['https://sepolia.base.org'] }
   },
   blockExplorers: {
-    default: { name: 'HashScan', url: 'https://hashscan.io/testnet' }
+    default: { name: 'BaseScan', url: 'https://sepolia.basescan.org' }
   },
+  iconUrl: '/icons/base.png',
   testnet: true
+};
+
+// Override default chains with colored Ethereum icons
+const sepolia = {
+  ...sepoliaBase,
+  iconUrl: '/icons/ethereum-eth-logo-colored.svg'
+};
+
+const arbitrumSepolia = {
+  ...arbitrumSepoliaBase,
+  iconUrl: '/icons/arbitrum-arb-logo.svg'
+};
+
+const optimismSepolia = {
+  ...optimismSepoliaBase,
+  iconUrl: '/icons/optimism-ethereum-op-logo.svg'
+};
+
+const mainnet = {
+  ...mainnetBase,
+  iconUrl: '/icons/ethereum-eth-logo-colored.svg'
+};
+
+const polygon = {
+  ...polygonBase,
+  iconUrl: '/icons/polygon-matic-logo.svg'
+};
+
+const arbitrum = {
+  ...arbitrumBase,
+  iconUrl: '/icons/arbitrum-arb-logo.svg'
+};
+
+const base = {
+  ...baseMainnetBase,
+  iconUrl: '/icons/base.png'
 };
 
 // React Query client for data fetching
@@ -144,8 +182,8 @@ const glassmorphismTheme = darkTheme({
   overlayBlur: 'large',
 });
 
-// Modal background and borders - lighter for network modal
-glassmorphismTheme.colors.modalBackground = 'rgba(255, 255, 255, 0.15)';
+// Modal background and borders - more transparent for all modals
+glassmorphismTheme.colors.modalBackground = 'rgba(255, 255, 255, 0.08)';
 glassmorphismTheme.colors.modalBorder = 'rgba(255, 255, 255, 0.3)';
 glassmorphismTheme.colors.modalText = 'rgba(255, 255, 255, 0.95)';
 glassmorphismTheme.colors.modalTextDim = 'rgba(255, 255, 255, 0.7)';
@@ -163,10 +201,10 @@ glassmorphismTheme.colors.menuItemBackground = 'rgba(255, 255, 255, 0.1)';
 glassmorphismTheme.colors.actionButtonBorder = 'rgba(255, 255, 255, 0.2)';
 glassmorphismTheme.colors.actionButtonSecondaryBackground = 'rgba(255, 255, 255, 0.1)';
 
-// Profile/Account modal - match network modal style
-glassmorphismTheme.colors.profileAction = 'rgba(255, 255, 255, 0.1)';
-glassmorphismTheme.colors.profileActionHover = 'rgba(255, 255, 255, 0.2)';
-glassmorphismTheme.colors.profileForeground = 'rgba(255, 255, 255, 0.15)';
+// Profile/Account modal - more transparent to match network modal
+glassmorphismTheme.colors.profileAction = 'rgba(255, 255, 255, 0.05)';
+glassmorphismTheme.colors.profileActionHover = 'rgba(255, 255, 255, 0.12)';
+glassmorphismTheme.colors.profileForeground = 'rgba(255, 255, 255, 0.08)';
 
 // Connect button styling
 glassmorphismTheme.colors.connectButtonBackground = 'rgba(255, 255, 255, 0.12)';

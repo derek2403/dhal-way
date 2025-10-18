@@ -1,12 +1,13 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
-import { IconHome, IconCurrencyDollar, IconWallet } from "@tabler/icons-react";
+import { IconHome, IconSend, IconReceipt } from "@tabler/icons-react";
 import { FloatingDock } from "@/components/ui/floating-dock";
 
 // Header component - used across all pages
 // Includes logo, optional navigation dock, and wallet connect button
 export const Header = ({ showNavigation = false }) => {
   // Navigation items for the floating dock
+  // Icons updated for clarity: Home, Send/Pay, and Receipt/Receive
   const navItems = [
     {
       title: "Home",
@@ -15,12 +16,12 @@ export const Header = ({ showNavigation = false }) => {
     },
     {
       title: "Pay",
-      icon: <IconCurrencyDollar className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
+      icon: <IconSend className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
       href: "/transfer",
     },
     {
       title: "Merchant",
-      icon: <IconWallet className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
+      icon: <IconReceipt className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
       href: "/merchant",
     },
   ];
