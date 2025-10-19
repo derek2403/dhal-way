@@ -5,7 +5,6 @@ export default function Document() {
     <Html lang="en">
       <Head>
         {/* DhalWay branding */}
-        <title>DhalWay</title>
         <meta name="description" content="Multi-chain crypto payment preferences" />
         <link rel="icon" type="image/png" href="/icons/dhalway_1.png" />
         <link rel="apple-touch-icon" href="/icons/dhalway_1.png" />
