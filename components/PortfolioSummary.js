@@ -23,7 +23,7 @@ const PortfolioSummary = ({
           <h3 className="text-sm font-bold text-white/90">Payment Summary</h3>
         </div>
         
-        <div className="space-y-2 flex-1 overflow-y-auto">
+        <div className="space-y-2 flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/40 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-width:thin] [scrollbar-color:rgba(0,0,0,0.4)_transparent]">
           {Object.entries(selectedChains).map(([chainId, tokens]) => (
             <div key={chainId} className="space-y-1">
               <div className="text-xs font-medium text-white/70 flex items-center gap-2 mb-1">

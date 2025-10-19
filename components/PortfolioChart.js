@@ -43,7 +43,7 @@ const PortfolioChart = ({
       
       {/* Chart Legend - Shows color mapping for tokens */}
       {totalAllocation > 0 && chartData.labels && chartData.labels.length > 0 && (
-        <div className="mb-3 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="mb-3 overflow-x-auto [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/40 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-width:thin] [scrollbar-color:rgba(0,0,0,0.4)_transparent]">
           <div className="flex gap-2 min-w-min">
             {chartData.labels.map((label, index) => {
               const tokenInfo = chartData.tokenInfo[index];
