@@ -523,10 +523,10 @@ const MerchantPage = () => {
             <AnimatePresence>
               {Object.keys(selectedChains).length > 0 && (
                 <motion.div
-                  className="flex-shrink-0 max-h-48"
-                  initial={{ opacity: 0, maxHeight: 0 }}
-                  animate={{ opacity: 1, maxHeight: 192 }}
-                  exit={{ opacity: 0, maxHeight: 0 }}
+                  className="flex-shrink-0 h-48 overflow-hidden"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 192 }}
+                  exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
                 >
                   <PortfolioSummary
