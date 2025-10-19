@@ -107,7 +107,7 @@ export default function LandingPage() {
       <AuroraBackground className="relative isolate grid h-dvh grid-rows-[auto,1fr] overflow-hidden bg-black">
         {/* Main Heading - Centered between navbar and cards */}
         <div className="pointer-events-none absolute top-[20%] left-0 right-0 flex items-center justify-center z-30">
-            <h1 className="text-lg md:text-2xl lg:text-5xl font-black text-center max-w-4xl leading-tight text-white">
+            <h1 className="animate-heading text-lg md:text-2xl lg:text-5xl font-black text-center max-w-4xl leading-tight text-white">
             Any tokens. Any chains. Both ways.
           </h1>
         </div>
@@ -118,7 +118,7 @@ export default function LandingPage() {
             {/* Payment Cards Container */}
             <div className="flex gap-6 flex-col lg:flex-row w-full max-w-4xl justify-center">
               {/* Payment Breakdown Card - LEFT SIDE */}
-              <div className="glass-card flex flex-col justify-start p-4 relative flex-1 max-w-xs">
+              <div className="animate-card-left glass-card flex flex-col justify-start p-4 relative flex-1 max-w-xs">
                 <BorderBeam 
                   size={120}
                   duration={4}
@@ -241,7 +241,7 @@ export default function LandingPage() {
               </div>
 
               {/* Animated Transition Arrow - Desktop */}
-              <div className="hidden lg:flex items-center justify-center flex-shrink-0">
+              <div className="animate-transition hidden lg:flex items-center justify-center flex-shrink-0">
                 <div className="relative flex items-center">
                   {/* Flowing dots */}
                   <div className="flex items-center gap-2">
@@ -291,7 +291,7 @@ export default function LandingPage() {
               </div>
 
               {/* Mobile Transition (vertical) */}
-              <div className="lg:hidden flex flex-col items-center justify-center py-3">
+              <div className="animate-transition lg:hidden flex flex-col items-center justify-center py-3">
                 <div className="relative flex flex-col items-center">
                   {/* Flowing dots */}
                   <div className="flex flex-col items-center gap-2 my-2">
@@ -339,7 +339,7 @@ export default function LandingPage() {
               </div>
 
               {/* Merchant Received Card - RIGHT SIDE */}
-              <div className="glass-card flex flex-col justify-start p-4 relative flex-1 max-w-xs">
+              <div className="animate-card-right glass-card flex flex-col justify-start p-4 relative flex-1 max-w-xs">
                 <BorderBeam 
                   size={120}
                   duration={4}

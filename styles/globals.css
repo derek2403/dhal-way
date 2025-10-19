@@ -194,6 +194,67 @@ body {
   animation: flow-dot 2.5s ease-in-out infinite;
 }
 
+/* Page Load Entrance Animations */
+/* Fade in and slide up from below */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade in and scale up slightly */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Simple fade in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Heading animation - fade in and slide up */
+.animate-heading {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+/* Card animations - staggered entrance */
+.animate-card-left {
+  animation: fadeInScale 0.4s ease-out forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+.animate-card-right {
+  animation: fadeInScale 0.5s ease-out forwards;
+  animation-delay: 0.9s;
+  opacity: 0;
+}
+
+/* Transition arrow animation */
+.animate-transition {
+  animation: fadeIn 0.5s ease-out forwards;
+  animation-delay: 0.6s;
+  opacity: 0;
+}
+
 .glass-card::before {
   content: '';
   position: absolute;
