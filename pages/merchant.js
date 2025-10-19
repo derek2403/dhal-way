@@ -556,6 +556,7 @@ const MerchantPage = () => {
               generateDetailedQRCode={generateQRCode}
               resetSelection={resetSelection}
               selectedChains={selectedChains}
+              chains={chains}
             />
             </motion.div>
             

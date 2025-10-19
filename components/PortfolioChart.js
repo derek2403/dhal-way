@@ -2,6 +2,7 @@ import React from 'react'
 import { Pie } from 'react-chartjs-2'
 import { motion } from 'framer-motion'
 import { PieChart, Target, RotateCcw, QrCode } from 'lucide-react'
+import Image from 'next/image'
 
 // PortfolioChart component - displays payment preferences as a pie chart
 // Allows user to generate QR codes and reset preferences
@@ -12,7 +13,8 @@ const PortfolioChart = ({
   generateQRCode, 
   generateDetailedQRCode,
   resetSelection, 
-  selectedChains 
+  selectedChains,
+  chains 
 }) => {
   return (
     <div className="glass-card p-4 h-full flex flex-col">
@@ -38,6 +40,71 @@ const PortfolioChart = ({
           </div>
         )}
       </div>
+      
+      {/* Chart Legend - Shows color mapping for tokens */}
+      {totalAllocation > 0 && chartData.labels && chartData.labels.length > 0 && (
+        <div className="mb-3 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex gap-2 min-w-min">
+            {chartData.labels.map((label, index) => {
+              const tokenInfo = chartData.tokenInfo[index];
+              const color = chartData.datasets[0].backgroundColor[index];
+              const percentage = chartData.datasets[0].data[index];
+              
+              // Find the chain icon for this token
+              const chainInfo = tokenInfo ? chains?.find(c => c.id === tokenInfo.chain) : null;
+              
+              return (
+                <div 
+                  key={`${label}-${index}`}
+                  className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 flex-shrink-0"
+                >
+                  {/* Color indicator */}
+                  <div 
+                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: color }}
+                  />
+                  
+                  {/* Token icon with chain indicator - only show if not "No Preference" */}
+                  {tokenInfo && tokenInfo.icon && (
+                    <div className="w-5 h-5 flex-shrink-0 relative">
+                      {/* Main token icon */}
+                      <Image 
+                        src={tokenInfo.icon} 
+                        alt={tokenInfo.name}
+                        width={20}
+                        height={20}
+                        className="object-contain"
+                      />
+                      {/* Chain icon badge at bottom right */}
+                      {chainInfo && chainInfo.icon && (
+                        <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-black/80 border border-white/20 flex items-center justify-center">
+                          <Image 
+                            src={chainInfo.icon} 
+                            alt={chainInfo.name}
+                            width={10}
+                            height={10}
+                            className="object-contain"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Token name and percentage */}
+                  <div className="flex items-center gap-1 whitespace-nowrap">
+                    <span className="text-xs text-white/80 font-medium">
+                      {tokenInfo ? tokenInfo.name : 'No Preference'}
+                    </span>
+                    <span className="text-xs text-white/60 font-medium">
+                      {percentage.toFixed(1)}%
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
       
       {/* Action Buttons */}
       <div className="flex flex-col gap-3 mt-auto">
