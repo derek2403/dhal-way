@@ -7,6 +7,7 @@ import { Header } from '../components/Header';
 import { Button } from "@/components/ui/button";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 
 // Aurora Background Component - creates animated gradient background
 // Real Aceternity UI implementation
@@ -107,9 +108,14 @@ export default function LandingPage() {
       <AuroraBackground className="relative isolate grid h-dvh grid-rows-[auto,1fr] overflow-hidden bg-black">
         {/* Main Heading - Centered between navbar and cards */}
         <div className="pointer-events-none absolute top-[20%] left-0 right-0 flex items-center justify-center z-30">
-            <h1 className="animate-heading text-lg md:text-2xl lg:text-5xl font-black text-center max-w-4xl leading-tight text-white">
-            Any tokens. Any chains. Both ways.
-          </h1>
+          <TextGenerateEffect 
+            words="Any tokens.|Any chains.|Both ways."
+            className="text-lg md:text-2xl lg:text-5xl font-black text-center max-w-4xl leading-tight text-white"
+            duration={0.5}
+            filter={true}
+            staggerDelay={0.4}
+            splitByPipe={true}
+          />
         </div>
 
         {/* Payment Cards - Shows example of user paying vs merchant receiving */}
