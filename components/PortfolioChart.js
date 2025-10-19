@@ -1,7 +1,7 @@
 import React from 'react'
 import { Pie } from 'react-chartjs-2'
 import { motion } from 'framer-motion'
-import { PieChart, Target, RotateCcw, QrCode } from 'lucide-react'
+import { PieChart, Target, RotateCcw, QrCode, X } from 'lucide-react'
 import Image from 'next/image'
 
 // PortfolioChart component - displays payment preferences as a pie chart
@@ -14,7 +14,8 @@ const PortfolioChart = ({
   generateDetailedQRCode,
   resetSelection, 
   selectedChains,
-  chains 
+  chains,
+  removeToken 
 }) => {
   return (
     <div className="glass-card p-4 h-full flex flex-col">
@@ -43,8 +44,8 @@ const PortfolioChart = ({
       
       {/* Chart Legend - Shows color mapping for tokens */}
       {totalAllocation > 0 && chartData.labels && chartData.labels.length > 0 && (
-        <div className="mb-3 overflow-x-auto [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/40 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-width:thin] [scrollbar-color:rgba(0,0,0,0.4)_transparent]">
-          <div className="flex gap-2 min-w-min">
+        <div className="mb-3 overflow-x-auto [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/40 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-width:thin] [scrollbar-color:rgba(0,0,0,0.4)_transparent] py-1.5 -my-1.5">
+          <div className="flex gap-2 min-w-min px-1 -mx-1">
             {chartData.labels.map((label, index) => {
               const tokenInfo = chartData.tokenInfo[index];
               const color = chartData.datasets[0].backgroundColor[index];
@@ -56,7 +57,7 @@ const PortfolioChart = ({
               return (
                 <div 
                   key={`${label}-${index}`}
-                  className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 flex-shrink-0"
+                  className="flex items-center gap-1.5 px-2 py-1.5 pr-6 rounded-lg bg-white/5 border border-white/10 flex-shrink-0 relative group"
                 >
                   {/* Color indicator */}
                   <div 
@@ -99,6 +100,17 @@ const PortfolioChart = ({
                       {percentage.toFixed(1)}%
                     </span>
                   </div>
+                  
+                  {/* Remove button - only show for actual tokens, not "No Preference" */}
+                  {tokenInfo && removeToken && (
+                    <button
+                      onClick={() => removeToken(tokenInfo.chain, tokenInfo.name)}
+                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500/90 border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all duration-200 z-10"
+                      title="Remove token"
+                    >
+                      <X className="w-2.5 h-2.5 text-white" />
+                    </button>
+                  )}
                 </div>
               );
             })}

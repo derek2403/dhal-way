@@ -557,6 +557,7 @@ const MerchantPage = () => {
               resetSelection={resetSelection}
               selectedChains={selectedChains}
               chains={chains}
+              removeToken={removeToken}
             />
             </motion.div>
             
