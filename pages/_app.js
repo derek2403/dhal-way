@@ -10,14 +10,10 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
-  mainnet,
-  polygon,
-  arbitrum,
-  base,
   baseSepolia,
-  optimismSepolia,
-  sepolia,
-  arbitrumSepolia
+  optimismSepolia as optimismSepoliaBase,
+  sepolia as sepoliaBase,
+  arbitrumSepolia as arbitrumSepoliaBase
 } from 'wagmi/chains';
 
 // Custom chain definitions for testnets with colored icons
@@ -67,26 +63,6 @@ const optimismSepolia = {
   iconUrl: '/icons/optimism-ethereum-op-logo.svg'
 };
 
-const mainnet = {
-  ...mainnetBase,
-  iconUrl: '/icons/ethereum-eth-logo-colored.svg'
-};
-
-const polygon = {
-  ...polygonBase,
-  iconUrl: '/icons/polygon-matic-logo.svg'
-};
-
-const arbitrum = {
-  ...arbitrumBase,
-  iconUrl: '/icons/arbitrum-arb-logo.svg'
-};
-
-const base = {
-  ...baseMainnetBase,
-  iconUrl: '/icons/base.png'
-};
-
 // React Query client for data fetching
 import {
   QueryClientProvider,
@@ -97,7 +73,7 @@ import {
 const config = getDefaultConfig({
   appName: 'dhal-way',
   projectId: '1',
-  chains: [sepolia, flowEVMTestnet, hederaTestnet, mainnet, polygon, optimismSepolia, arbitrumSepolia, arbitrum, base, baseSepolia],
+  chains: [sepolia, flowEVMTestnet, optimismSepolia, arbitrumSepolia, baseSepolia],
   ssr: true,
 });
 
