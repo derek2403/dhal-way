@@ -194,6 +194,23 @@ body {
   animation: flow-dot 2.5s ease-in-out infinite;
 }
 
+/* Arrow Pulse Animation - syncs with flowing dots */
+@keyframes arrow-pulse {
+  0%, 50% {
+    opacity: 0.4;
+  }
+  70% {
+    opacity: 0.8;
+  }
+  85%, 100% {
+    opacity: 0.4;
+  }
+}
+
+.animate-flow-arrow {
+  animation: arrow-pulse 2.5s ease-in-out infinite;
+}
+
 /* Page Load Entrance Animations */
 /* Fade in and slide up from below */
 @keyframes fadeInUp {

@@ -262,7 +262,7 @@ export default function LandingPage() {
                       width="40" 
                       height="20" 
                       viewBox="0 0 40 20" 
-                      className="text-white/60"
+                      className="text-white/60 animate-flow-arrow"
                     >
                       <defs>
                         <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -311,7 +311,7 @@ export default function LandingPage() {
                     width="20" 
                     height="40" 
                     viewBox="0 0 20 40" 
-                    className="text-white/60"
+                    className="text-white/60 animate-flow-arrow"
                   >
                     <defs>
                       <linearGradient id="arrowGradientVertical" x1="0%" y1="0%" x2="0%" y2="100%">
