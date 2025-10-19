@@ -507,7 +507,7 @@ const MerchantPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 h-full">
             {/* Left Panel - Payment Chain Selection */}
           <motion.div 
-            className="lg:col-span-1 h-full flex flex-col"
+            className="lg:col-span-1 h-full flex flex-col gap-3"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -523,10 +523,10 @@ const MerchantPage = () => {
             <AnimatePresence>
               {Object.keys(selectedChains).length > 0 && (
                 <motion.div
-                  className="flex-shrink-0 h-48"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 192 }}
-                  exit={{ opacity: 0, height: 0 }}
+                  className="flex-shrink-0 max-h-48"
+                  initial={{ opacity: 0, maxHeight: 0 }}
+                  animate={{ opacity: 1, maxHeight: 192 }}
+                  exit={{ opacity: 0, maxHeight: 0 }}
                   transition={{ duration: 0.3 }}
                 >
                   <PortfolioSummary
