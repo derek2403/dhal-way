@@ -307,11 +307,6 @@ export default function LandingPage() {
                     <div className="w-2 h-2 bg-white/20 rounded-full animate-flow-dot" style={{animationDelay: '1.5s'}}></div>
                   </div>
                 </div>
-                
-                {/* Conversion label */}
-                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-white/40 whitespace-nowrap">
-                  Swaps & Bridges
-                </div>
               </div>
 
               {/* Mobile Transition (vertical) */}
