@@ -113,7 +113,7 @@ export default function LandingPage() {
             className="text-lg md:text-2xl lg:text-5xl font-black text-center max-w-4xl leading-tight text-white"
             duration={0.5}
             filter={true}
-            staggerDelay={0.4}
+            staggerDelay={0.5}
             splitByPipe={true}
           />
         </div>
