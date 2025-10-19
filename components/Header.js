@@ -27,24 +27,24 @@ export const Header = ({ showNavigation = false }) => {
   ];
 
   return (
-    <header className="relative flex items-center pt-8 pb-4 px-16">
+    <header className="relative flex items-center pt-4 sm:pt-6 lg:pt-8 pb-2 sm:pb-3 lg:pb-4 px-4 sm:px-8 lg:px-16">
       {/* Logo and App Name - Left */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
         <Image 
           src="/icons/dhalway_1.png"
           alt="DhalWay Logo"
           width={64}
           height={64}
-          className="w-16 h-16"
+          className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16"
         />
-        <div className="select-none text-3xl font-bold tracking-wide text-white/90">
+        <div className="select-none text-lg sm:text-2xl lg:text-3xl font-bold tracking-wide text-white/90">
           DhalWay
         </div>
       </div>
       
-      {/* Navigation - Absolutely centered */}
+      {/* Navigation - Absolutely centered, hidden on mobile */}
       {showNavigation && (
-        <div className="absolute left-1/2 -translate-x-1/2">
+        <div className="hidden sm:block absolute left-1/2 -translate-x-1/2">
           <FloatingDock 
             items={navItems}
             desktopClassName="bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
@@ -70,9 +70,10 @@ export const Header = ({ showNavigation = false }) => {
                       <button
                         onClick={openConnectModal}
                         type="button"
-                        className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+                        className="px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white/90 hover:text-white transition-colors rounded-lg hover:bg-white/10"
                       >
-                        Connect Wallet
+                        <span className="hidden sm:inline">Connect Wallet</span>
+                        <span className="sm:hidden">Connect</span>
                       </button>
                     );
                   }
@@ -90,37 +91,38 @@ export const Header = ({ showNavigation = false }) => {
                   }
 
                   return (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
                       <button
                         onClick={openChainModal}
                         type="button"
-                        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+                        className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/10"
                       >
                         {chain.hasIcon && (
                           <div
-                            className="w-4 h-4 rounded-full overflow-hidden flex items-center justify-center"
+                            className="w-3 h-3 sm:w-4 sm:h-4 rounded-full overflow-hidden flex items-center justify-center"
                             style={{ background: chain.iconBackground }}
                           >
                             {chain.iconUrl && (
                               <img
                                 alt={chain.name ?? 'Chain icon'}
                                 src={chain.iconUrl}
-                                className="w-4 h-4"
+                                className="w-3 h-3 sm:w-4 sm:h-4"
                               />
                             )}
                           </div>
                         )}
-                        <span className="hidden sm:inline">{chain.name}</span>
+                        <span className="hidden md:inline">{chain.name}</span>
                       </button>
 
                       <button
                         onClick={openAccountModal}
                         type="button"
-                        className="px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+                        className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/10"
                       >
-                        {account.displayName}
+                        <span className="hidden sm:inline">{account.displayName}</span>
+                        <span className="sm:hidden">{account.displayName.slice(0, 6)}...</span>
                         {account.displayBalance && (
-                          <span className="hidden sm:inline text-white/60 ml-1">
+                          <span className="hidden lg:inline text-white/60 ml-1">
                             ({account.displayBalance})
                           </span>
                         )}

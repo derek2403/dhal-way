@@ -141,15 +141,28 @@ body {
 
 @media (max-width: 768px) {
   .glass-card {
-    width: auto;
+    width: 100%;
     min-height: auto;
   }
 }
 
 @media (max-width: 640px) {
   .glass-card {
-    width: auto;
+    width: 100%;
     min-height: auto;
+  }
+}
+
+/* Landing page (index) - mobile card width override */
+@media (max-width: 768px) {
+  .landing-mobile-card.glass-card {
+    width: 60% !important; /* slightly inset for nicer margins */
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-mobile-card.glass-card {
+    width: 60% !important;
   }
 }
 
