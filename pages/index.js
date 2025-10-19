@@ -137,8 +137,8 @@ export default function LandingPage() {
         </div>
 
         {/* Payment Cards - Shows example of user paying vs merchant receiving */}
-        <div className="pointer-events-none absolute top-[20%] sm:top-[22%] lg:bottom-0 left-0 right-0 flex items-center justify-center lg:pb-20">
-          <div className="flex flex-col items-center gap-1.5 sm:gap-2.5 max-w-4xl w-full px-2 sm:px-4">
+        <div className="pointer-events-none absolute top-[20%] sm:top-[22%] lg:bottom-0 left-0 right-0 flex items-center justify-center lg:pb-20 pb-2 sm:pb-4">
+          <div className="flex flex-col items-center gap-1.5 sm:gap-2.5 max-w-4xl w-full px-2 sm:px-4 mb-8 sm:mb-12 lg:mb-0">
             {/* Payment Cards Container */}
             <div className="flex gap-1.5 sm:gap-3 lg:gap-6 flex-col lg:flex-row w-full max-w-4xl justify-center">
               {/* Payment Breakdown Card - LEFT SIDE */}
@@ -437,6 +437,11 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
+
+            {/* Footer text - between card and bottom on mobile */}
+            <div id="about" className="pointer-events-auto mt-6 sm:mt-8 lg:hidden text-center text-[10px] sm:text-xs text-white/50 px-4">
+              Chain‑agnostic. Developer‑friendly. Minimal UX friction.
+            </div>
           </div>
         </div>
 
@@ -445,8 +450,8 @@ export default function LandingPage() {
           {/* Content is now in the glassmorphism cards above */}
         </main>
 
-        {/* Footer note (non-scroll, stays within viewport) */}
-        <div id="about" className="pointer-events-none mb-2 sm:mb-4 lg:mb-6 mt-auto text-center text-[8px] sm:text-[10px] lg:text-xs text-white/50 px-4">
+        {/* Footer note - desktop only */}
+        <div className="pointer-events-none mb-2 sm:mb-4 lg:mb-6 mt-auto text-center text-xs text-white/50 px-4 hidden lg:block">
           Chain‑agnostic. Developer‑friendly. Minimal UX friction.
     </div>
       </AuroraBackground>
