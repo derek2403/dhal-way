@@ -87,11 +87,24 @@ const TokenWithChain = ({ tokenSrc, chainSrc, tokenAlt, chainAlt }) => (
 export default function LandingPage() {
   // Prevent page scrolling on landing page
   useEffect(() => {
+    // Keep reference to any existing inline styles so we can restore on unmount
     const previousHtmlOverflow = document.documentElement.style.overflow;
     const previousBodyOverflow = document.body.style.overflow;
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
+
+    // Allow scrolling on mobile/tablet; lock scroll on desktop (>= lg breakpoint)
+    const updateOverflow = () => {
+      const isDesktop = window.matchMedia('(min-width: 1024px)').matches; // Tailwind lg
+      document.documentElement.style.overflow = isDesktop ? 'hidden' : '';
+      document.body.style.overflow = isDesktop ? 'hidden' : '';
+    };
+
+    updateOverflow();
+    window.addEventListener('resize', updateOverflow);
+    window.addEventListener('orientationchange', updateOverflow);
+
     return () => {
+      window.removeEventListener('resize', updateOverflow);
+      window.removeEventListener('orientationchange', updateOverflow);
       document.documentElement.style.overflow = previousHtmlOverflow;
       document.body.style.overflow = previousBodyOverflow;
     };
@@ -105,7 +118,7 @@ export default function LandingPage() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <AuroraBackground className="relative isolate grid h-dvh grid-rows-[auto,1fr] overflow-hidden bg-black">
+      <AuroraBackground className="relative isolate grid h-dvh grid-rows-[auto,1fr] overflow-x-hidden overflow-y-auto lg:overflow-hidden bg-black">
         {/* Header with Logo, Navigation and Connect Button */}
         <div className="absolute top-0 left-0 right-0 z-40">
           <Header showNavigation={true} />
