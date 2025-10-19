@@ -112,10 +112,10 @@ export default function LandingPage() {
         </div>
 
         {/* Main Heading - Below header */}
-        <div className="pointer-events-none absolute top-[12%] sm:top-[14%] lg:top-[20%] left-0 right-0 flex items-center justify-center z-30 px-4">
+        <div className="pointer-events-none absolute top-[12%] sm:top-[14%] lg:top-[16%] left-0 right-0 flex items-center justify-center z-30 px-4">
           <TextGenerateEffect 
             words="Any tokens.|Any chains.|Both ways."
-            className="text-base sm:text-xl md:text-2xl lg:text-5xl font-black text-center max-w-4xl leading-tight text-white"
+            className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-black text-center max-w-4xl leading-tight text-white"
             duration={0.5}
             filter={true}
             staggerDelay={0.5}
