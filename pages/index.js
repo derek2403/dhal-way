@@ -241,11 +241,11 @@ export default function LandingPage() {
                       tokenSrc="/icons/paypal-usd-pyusd-logo.svg" 
                       chainSrc="/icons/ethereum-eth-logo-colored.svg" 
                       tokenAlt="PYUSD" 
-                      chainAlt="Ethereum Sepolia"
+                      chainAlt="Ethereum"
                     />
                     <div className="flex flex-col">
                       <span className="text-white/90 text-[10px] sm:text-xs lg:text-sm font-medium">PYUSD</span>
-                      <span className="text-white/50 text-[8px] sm:text-[10px] lg:text-xs">on Ethereum Sepolia</span>
+                      <span className="text-white/50 text-[8px] sm:text-[10px] lg:text-xs">on Ethereum</span>
                     </div>
                   </div>
                   <div className="text-right">
