@@ -339,11 +339,6 @@ export default function Transfer() {
                 >
                   Open QR Scanner
                 </button>
-                <div className="bg-white/5 rounded-lg p-4 border border-white/10 mt-6">
-                  <p className="text-sm text-white/50">
-                    The merchant will show you a QR code with their wallet address and preferred payment tokens.
-                  </p>
-                </div>
               </div>
             </div>
           )}
