@@ -2,6 +2,15 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
 import { IconHome, IconSend, IconReceipt } from "@tabler/icons-react";
 import { FloatingDock } from "@/components/ui/floating-dock";
+import { Menu } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import Link from 'next/link';
 
 // Header component - used across all pages
 // Includes logo, optional navigation dock, and wallet connect button
@@ -28,6 +37,38 @@ export const Header = ({ showNavigation = false }) => {
 
   return (
     <header className="relative flex items-center pt-4 sm:pt-6 lg:pt-8 pb-2 sm:pb-3 lg:pb-4 px-4 sm:px-8 lg:px-16">
+      {/* Mobile Hamburger Menu - Only visible on mobile when showNavigation is true */}
+      {showNavigation && (
+        <div className="sm:hidden mr-3">
+          <Sheet>
+            <SheetTrigger asChild>
+              <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                <Menu className="h-6 w-6 text-white/90" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-64 bg-zinc-900/95 backdrop-blur-lg border-white/20">
+              <SheetHeader>
+                <SheetTitle className="text-white/90 text-left">Navigation</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-4 mt-8">
+                {navItems.map((item) => (
+                  <Link 
+                    key={item.title}
+                    href={item.href}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                  >
+                    <div className="w-5 h-5">
+                      {item.icon}
+                    </div>
+                    <span className="text-base font-medium">{item.title}</span>
+                  </Link>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+      )}
+      
       {/* Logo and App Name - Left */}
       <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
         <Image 
