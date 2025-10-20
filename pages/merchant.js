@@ -329,7 +329,7 @@ const MerchantPage = () => {
   }
 
   return (
-    <div className="h-screen bg-black overflow-hidden relative">
+    <div className="min-h-screen lg:h-screen bg-black overflow-y-auto lg:overflow-hidden relative">
       <div className="absolute inset-0 z-0">
         <Spotlight
           gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, .10) 40%, hsla(0, 0%, 100%, 0) 70%)"
@@ -345,12 +345,12 @@ const MerchantPage = () => {
       </div>
       <div className="relative z-50">
         <Header showNavigation={true} />
-        <div className="max-w-7xl mx-auto p-3 h-[calc(100vh-120px)]">
+        <div className="max-w-7xl mx-auto p-3 min-h-[calc(100vh-120px)] lg:h-[calc(100vh-120px)]">
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:h-full">
             {/* Left Panel - Payment Chain Selection */}
           <motion.div 
-            className="lg:col-span-1 h-full flex flex-col gap-3"
+            className="lg:col-span-1 lg:h-full flex flex-col gap-3"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -386,7 +386,7 @@ const MerchantPage = () => {
               
           {/* Center Panel - Payment Preferences */}
           <motion.div 
-            className="lg:col-span-1 h-full"
+            className="lg:col-span-1 lg:h-full"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -406,7 +406,7 @@ const MerchantPage = () => {
             
           {/* Right Panel - Available Payment Tokens */}
           <motion.div 
-            className="lg:col-span-1 h-full"
+            className="lg:col-span-1 lg:h-full"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
