@@ -315,12 +315,12 @@ const MerchantPage = () => {
           duration={9}
           xOffset={120}
         />
-        <div className="relative z-10">
+        <div className="relative z-50">
           <Header showNavigation={true} />
-          <div className="flex items-center justify-center h-[calc(100vh-120px)]">
-            <div className="glass-card p-8 text-center">
-              <h1 className="text-2xl font-bold mb-4 text-white/90">Connect Your Wallet</h1>
-              <p className="text-white/70">Please connect your wallet to set up payment claiming preferences</p>
+          <div className="flex items-center justify-center h-[calc(100vh-120px)] px-4">
+            <div className="glass-card p-4 sm:p-6 lg:p-8 text-center max-w-sm sm:max-w-md lg:max-w-2xl w-full">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 lg:mb-6 text-white/90">Connect Your Wallet</h1>
+              <p className="text-sm sm:text-base lg:text-lg text-white/70">Please connect your wallet to set up payment claiming preferences</p>
             </div>
           </div>
         </div>
@@ -343,7 +343,7 @@ const MerchantPage = () => {
           xOffset={120}
         />
       </div>
-      <div className="relative z-10">
+      <div className="relative z-50">
         <Header showNavigation={true} />
         <div className="max-w-7xl mx-auto p-3 h-[calc(100vh-120px)]">
 
