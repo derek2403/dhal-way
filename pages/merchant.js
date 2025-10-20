@@ -303,7 +303,7 @@ const MerchantPage = () => {
 
   if (!isConnected) {
     return (
-      <div className="h-screen bg-black overflow-hidden relative">
+      <div className="h-screen bg-black overflow-x-hidden overflow-y-hidden relative">
         <Spotlight
           gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, .10) 40%, hsla(0, 0%, 100%, 0) 70%)"
           gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .18) 0, hsla(0, 0%, 100%, .08) 60%, transparent 90%)"
@@ -329,7 +329,7 @@ const MerchantPage = () => {
   }
 
   return (
-    <div className="min-h-screen lg:h-screen bg-black overflow-y-auto lg:overflow-hidden relative">
+    <div className="min-h-screen lg:h-screen bg-black overflow-x-hidden overflow-y-auto lg:overflow-hidden relative">
       <div className="absolute inset-0 z-0">
         <Spotlight
           gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, .10) 40%, hsla(0, 0%, 100%, 0) 70%)"
