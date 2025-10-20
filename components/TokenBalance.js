@@ -399,7 +399,7 @@ export default function TokenBalance({ transferAmounts = {}, setTransferAmounts,
         backdropFilter: 'blur(8px)'
       }}>
         {/* Payment Summary */}
-        {maxPaymentAmount && (
+        {maxPaymentAmount > 0 && (
           <div className="mb-6 pb-6 border-b border-white/10">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-white">Payment Summary</h3>
