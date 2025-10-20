@@ -362,62 +362,78 @@ const MerchantPage = () => {
             
             {/* Tab 1: Select Tokens - Chain Selector + Token Grid */}
             <TabsContent value="select" className="space-y-3">
-              <ChainSelector
-                chains={chains}
-                currentChain={currentChain}
-                setCurrentChain={setCurrentChain}
-                selectedChains={selectedChains}
-              />
-              {currentChain ? (
-                <TokenGrid
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-3"
+              >
+                <ChainSelector
                   chains={chains}
                   currentChain={currentChain}
-                  tokensByChain={tokensByChain}
+                  setCurrentChain={setCurrentChain}
                   selectedChains={selectedChains}
-                  handleTokenClick={handleTokenClick}
-                  totalAllocation={totalAllocation}
                 />
-              ) : (
-                <div className="glass-card p-6 text-center">
-                  <p className="text-white/70 text-sm">
-                    Select a blockchain above to view available tokens
-                  </p>
-                </div>
-              )}
+                {currentChain ? (
+                  <TokenGrid
+                    chains={chains}
+                    currentChain={currentChain}
+                    tokensByChain={tokensByChain}
+                    selectedChains={selectedChains}
+                    handleTokenClick={handleTokenClick}
+                    totalAllocation={totalAllocation}
+                  />
+                ) : (
+                  <div className="glass-card p-6 text-center">
+                    <p className="text-white/70 text-sm">
+                      Select a blockchain above to view available tokens
+                    </p>
+                  </div>
+                )}
+              </motion.div>
             </TabsContent>
             
             {/* Tab 2: Review & QR - Portfolio Summary + Chart + Actions */}
             <TabsContent value="review" className="space-y-3">
-              <AnimatePresence>
-                {Object.keys(selectedChains).length > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <PortfolioSummary
-                      selectedChains={selectedChains}
-                      chains={chains}
-                      tokensByChain={tokensByChain}
-                      totalAllocation={totalAllocation}
-                      removeToken={removeToken}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              
-              <PortfolioChart
-                totalAllocation={totalAllocation}
-                chartData={chartData}
-                chartOptions={chartOptions}
-                generateQRCode={generateSimpleQRCode}
-                generateDetailedQRCode={generateQRCode}
-                resetSelection={resetSelection}
-                selectedChains={selectedChains}
-                chains={chains}
-                removeToken={removeToken}
-              />
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-3"
+              >
+                <AnimatePresence>
+                  {Object.keys(selectedChains).length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <PortfolioSummary
+                        selectedChains={selectedChains}
+                        chains={chains}
+                        tokensByChain={tokensByChain}
+                        totalAllocation={totalAllocation}
+                        removeToken={removeToken}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                <PortfolioChart
+                  totalAllocation={totalAllocation}
+                  chartData={chartData}
+                  chartOptions={chartOptions}
+                  generateQRCode={generateSimpleQRCode}
+                  generateDetailedQRCode={generateQRCode}
+                  resetSelection={resetSelection}
+                  selectedChains={selectedChains}
+                  chains={chains}
+                  removeToken={removeToken}
+                />
+              </motion.div>
             </TabsContent>
           </Tabs>
         </div>
