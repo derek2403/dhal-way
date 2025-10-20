@@ -39,7 +39,7 @@ ChartJS.register({
 const MerchantPage = () => {
   const { address, isConnected } = useAccount()
   const [selectedChains, setSelectedChains] = useState({})
-  const [currentChain, setCurrentChain] = useState('sepolia')
+  const [currentChain, setCurrentChain] = useState(null)
   const [qrDataUrl, setQrDataUrl] = useState('')
   const [showTokenModal, setShowTokenModal] = useState(false)
   const [showQRModal, setShowQRModal] = useState(false)
@@ -247,7 +247,7 @@ const MerchantPage = () => {
 
   const resetSelection = () => {
     setSelectedChains({})
-    setCurrentChain('sepolia')
+    setCurrentChain(null)
     setSelectedToken('')
     setTokenAllocation(10)
     setQrDataUrl('')
@@ -331,7 +331,7 @@ const MerchantPage = () => {
 
   return (
     <div className="min-h-screen lg:h-screen bg-black overflow-x-hidden overflow-y-auto lg:overflow-hidden relative">
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <Spotlight
           gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, .10) 40%, hsla(0, 0%, 100%, 0) 70%)"
           gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .18) 0, hsla(0, 0%, 100%, .08) 60%, transparent 90%)"
@@ -346,12 +346,12 @@ const MerchantPage = () => {
       </div>
       <div className="relative z-50">
         <Header showNavigation={true} />
-        <div className="max-w-7xl mx-auto p-3 min-h-[calc(100vh-120px)] lg:h-[calc(100vh-120px)]">
+        <div className="max-w-7xl mx-auto p-3 lg:h-[calc(100vh-120px)]">
 
         {/* Mobile Tab Layout - Only on mobile */}
-        <div className="lg:hidden">
+        <div className="lg:hidden flex flex-col">
           <Tabs defaultValue="select" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-lg border border-white/20 mb-4">
+            <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-lg border border-white/20 mb-3">
               <TabsTrigger value="select" className="data-[state=active]:bg-white/20 text-white/70 data-[state=active]:text-white">
                 Select Tokens
               </TabsTrigger>
@@ -368,14 +368,22 @@ const MerchantPage = () => {
                 setCurrentChain={setCurrentChain}
                 selectedChains={selectedChains}
               />
-              <TokenGrid
-                chains={chains}
-                currentChain={currentChain}
-                tokensByChain={tokensByChain}
-                selectedChains={selectedChains}
-                handleTokenClick={handleTokenClick}
-                totalAllocation={totalAllocation}
-              />
+              {currentChain ? (
+                <TokenGrid
+                  chains={chains}
+                  currentChain={currentChain}
+                  tokensByChain={tokensByChain}
+                  selectedChains={selectedChains}
+                  handleTokenClick={handleTokenClick}
+                  totalAllocation={totalAllocation}
+                />
+              ) : (
+                <div className="glass-card p-6 text-center">
+                  <p className="text-white/70 text-sm">
+                    Select a blockchain above to view available tokens
+                  </p>
+                </div>
+              )}
             </TabsContent>
             
             {/* Tab 2: Review & QR - Portfolio Summary + Chart + Actions */}
@@ -479,14 +487,22 @@ const MerchantPage = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <TokenGrid
-              chains={chains}
-              currentChain={currentChain}
-              tokensByChain={tokensByChain}
-              selectedChains={selectedChains}
-              handleTokenClick={handleTokenClick}
-              totalAllocation={totalAllocation}
-                    />
+            {currentChain ? (
+              <TokenGrid
+                chains={chains}
+                currentChain={currentChain}
+                tokensByChain={tokensByChain}
+                selectedChains={selectedChains}
+                handleTokenClick={handleTokenClick}
+                totalAllocation={totalAllocation}
+              />
+            ) : (
+              <div className="glass-card p-8 flex items-center justify-center h-full">
+                <p className="text-white/70 text-center">
+                  Select a blockchain to view available tokens
+                </p>
+              </div>
+            )}
                   </motion.div>
                 </div>
                 
