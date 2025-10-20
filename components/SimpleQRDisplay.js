@@ -10,23 +10,23 @@ const SimpleQRDisplay = ({
   if (!showSimpleQRModal) return null
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-6">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-3 sm:p-6">
       <motion.div 
-        className="glass-card max-w-md w-full p-6"
+        className="glass-card max-w-md w-full p-4 sm:p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.2, ease: "easeOut" }}
       >
-        <div className="text-center space-y-6">
+        <div className="text-center space-y-4 sm:space-y-6">
           <motion.div 
-            className="space-y-2"
+            className="space-y-1 sm:space-y-2"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
-            <h3 className="text-xl font-bold text-white/90">Payment QR Code</h3>
-            <p className="text-sm text-white/70">Share this QR code for payments</p>
+            <h3 className="text-lg sm:text-xl font-bold text-white/90">Payment QR Code</h3>
+            <p className="text-xs sm:text-sm text-white/70">Share this QR code for payments</p>
           </motion.div>
       
           {qrDataUrl && (
@@ -48,8 +48,7 @@ const SimpleQRDisplay = ({
                   <img 
                     src={qrDataUrl} 
                     alt="Payment QR Code" 
-                    className="rounded-lg shadow-lg" 
-                    style={{ width: '400px', height: '400px' }}
+                    className="rounded-lg shadow-lg w-64 h-64 sm:w-80 sm:h-80 lg:w-[400px] lg:h-[400px]" 
                   />
                 </div>
               </motion.div>
