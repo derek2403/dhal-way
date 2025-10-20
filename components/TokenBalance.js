@@ -36,7 +36,7 @@ const TokenWithChain = ({ tokenSrc, chainSrc, tokenAlt, chainAlt }) => (
 );
 
 // Individual token row component
-const TokenRow = ({ token, chain, userAddress, transferAmounts, onTransferAmountChange, tokenPrice, maxPaymentAmount, currentTotalUSD }) => {
+const TokenRow = ({ token, chain, userAddress, transferAmounts, onTransferAmountChange, tokenPrice, maxPaymentAmount, currentTotalUSD, isAmountSet = false }) => {
   const { balance, isLoading, error } = useTokenBalance(chain.chainId, token.address, userAddress);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
   
@@ -222,53 +222,66 @@ const TokenRow = ({ token, chain, userAddress, transferAmounts, onTransferAmount
         </div>
       </div>
 
-      {/* Slider - Responsive column */}
-      <div className="flex flex-col gap-2 justify-center items-center w-full order-3 md:order-2">
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={transferPercentage}
-          onChange={(e) => handleSliderChange(Number(e.target.value))}
-          className="w-full h-1.5 rounded appearance-none cursor-pointer"
-          style={{
-            accentColor: '#ffffff',
-            background: `linear-gradient(to right, #ffffff 0%, #ffffff ${transferPercentage}%, rgba(255,255,255,0.2) ${transferPercentage}%, rgba(255,255,255,0.2) 100%)`
-          }}
-        />
-
-        <div className="flex justify-between text-xs text-gray-400 w-full">
-          <span>0%</span>
-          <span>50%</span>
-          <span>100%</span>
-        </div>
-      </div>
-
-      {/* USD Input - Calculator-style (digits accumulate from right) */}
-      <div className="text-center md:text-right order-2 md:order-3">
-        <div className="relative mb-2">
-          <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-white font-semibold pointer-events-none">
-            $
-          </span>
+      {/* Slider - Responsive column - Hidden until amount is set */}
+      {isAmountSet ? (
+        <div className="flex flex-col gap-2 justify-center items-center w-full order-3 md:order-2">
           <input
-            type="text"
-            inputMode="numeric"
-            value={(rawCents / 100).toFixed(2)}
-            onKeyDown={handleKeyDown}
-            onChange={(e) => e.preventDefault()} // Prevent typing directly, only use keyboard handler
-            className="w-full sm:w-32 md:w-full pl-6 pr-2 py-2 text-sm font-semibold text-white bg-white/10 border border-white/20 rounded-lg text-right outline-none backdrop-blur-sm focus:border-white/40 focus:bg-white/15 transition-all cursor-text"
-            placeholder="0.00"
+            type="range"
+            min="0"
+            max="100"
+            value={transferPercentage}
+            onChange={(e) => handleSliderChange(Number(e.target.value))}
+            className="w-full h-1.5 rounded appearance-none cursor-pointer"
+            style={{
+              accentColor: '#ffffff',
+              background: `linear-gradient(to right, #ffffff 0%, #ffffff ${transferPercentage}%, rgba(255,255,255,0.2) ${transferPercentage}%, rgba(255,255,255,0.2) 100%)`
+            }}
           />
+
+          <div className="flex justify-between text-xs text-gray-400 w-full">
+            <span>0%</span>
+            <span>50%</span>
+            <span>100%</span>
+          </div>
         </div>
-        <div className="text-xs text-gray-400 truncate">
-          {transferPercentage.toFixed(1)}% • {transferAmount.toFixed(4)} {token.symbol}
+      ) : (
+        <div className="flex flex-col gap-2 justify-center items-center w-full order-3 md:order-2">
+          <div className="text-xs text-gray-400 text-center">
+            Set payment amount to enable
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* USD Input - Calculator-style (digits accumulate from right) - Hidden until amount is set */}
+      {isAmountSet ? (
+        <div className="text-center md:text-right order-2 md:order-3">
+          <div className="relative mb-2">
+            <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-white font-semibold pointer-events-none">
+              $
+            </span>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={(rawCents / 100).toFixed(2)}
+              onKeyDown={handleKeyDown}
+              onChange={(e) => e.preventDefault()} // Prevent typing directly, only use keyboard handler
+              className="w-full sm:w-32 md:w-full pl-6 pr-2 py-2 text-sm font-semibold text-white bg-white/10 border border-white/20 rounded-lg text-right outline-none backdrop-blur-sm focus:border-white/40 focus:bg-white/15 transition-all cursor-text"
+              placeholder="0.00"
+            />
+          </div>
+          <div className="text-xs text-gray-400 truncate">
+            {transferPercentage.toFixed(1)}% • {transferAmount.toFixed(4)} {token.symbol}
+          </div>
+        </div>
+      ) : (
+        <div className="text-center md:text-right order-2 md:order-3">
+        </div>
+      )}
     </div>
   );
 };
 
-export default function TokenBalance({ transferAmounts = {}, setTransferAmounts, tokenPrices = {}, pricesLoading = false, pricesError = null, maxPaymentAmount = null, currentTotalUSD = 0 }) {
+export default function TokenBalance({ transferAmounts = {}, setTransferAmounts, tokenPrices = {}, pricesLoading = false, pricesError = null, maxPaymentAmount = null, currentTotalUSD = 0, isAmountSet = false }) {
   const { address, isConnected } = useAccount();
   
   // Transfer functionality
@@ -430,6 +443,7 @@ export default function TokenBalance({ transferAmounts = {}, setTransferAmounts,
             tokenPrice={tokenPrices[token.symbol]}
             maxPaymentAmount={maxPaymentAmount}
             currentTotalUSD={currentTotalUSD}
+            isAmountSet={isAmountSet}
           />
         ))}
 

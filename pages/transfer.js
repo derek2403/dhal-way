@@ -447,8 +447,8 @@ export default function Transfer() {
             </div>
           )}
 
-          {/* Token Balance - Blurred until amount is set */}
-          <div className={`w-full transition-all duration-300 ${!isAmountSet ? 'blur-md pointer-events-none select-none' : ''}`}>
+          {/* Token Balance - Show tokens but hide controls until amount is set */}
+          <div className="w-full transition-all duration-300">
             <TokenBalance 
               transferAmounts={transferAmounts}
               setTransferAmounts={setTransferAmountsWithLimit}
@@ -457,13 +457,15 @@ export default function Transfer() {
               pricesError={pricesError}
               maxPaymentAmount={parseFloat(paymentAmount) || 0}
               currentTotalUSD={calculateTotalUSDValue()}
+              isAmountSet={isAmountSet}
             />
           </div>
 
-          {/* Atomic Transfer - Also blurred until amount is set */}
-          <div className={`w-full transition-all duration-300 ${!isAmountSet ? 'blur-md pointer-events-none select-none' : ''}`}>
+          {/* Atomic Transfer - Hide until amount is set */}
+          <div className="w-full transition-all duration-300">
             <AtomicTransfer 
               transferAmounts={transferAmounts}
+              isAmountSet={isAmountSet}
             />
           </div>
         </div>
