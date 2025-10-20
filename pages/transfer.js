@@ -322,13 +322,13 @@ export default function Transfer() {
         <main className={`px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto ${
           !isConnected 
             ? 'flex items-center justify-center h-[calc(100vh-120px)]' 
-            : 'py-4 sm:py-6 lg:py-8'
+            : 'pt-3 pb-6 sm:pt-4 sm:pb-8'
         }`}>
-        <div className={!isConnected ? '' : 'space-y-6 sm:space-y-8 lg:space-y-10'}>
+        <div className={!isConnected ? '' : 'space-y-4 sm:space-y-5'}>
           {/* Prompt to scan QR code if no portfolio data */}
           {!portfolioData && isConnected && (
-            <div className="w-full flex items-center justify-center min-h-[60vh]">
-              <div className="glass-card flex flex-col justify-start p-8 relative max-w-2xl mx-auto w-full text-center">
+            <div className="w-full">
+              <div className="glass-card flex flex-col justify-start p-6 sm:p-8 relative max-w-2xl mx-auto w-full text-center">
                 <h3 className="text-2xl font-bold mb-4 text-white">Scan QR Code to Start Payment</h3>
                 <p className="text-white/70 mb-6">
                   Please scan the QR code from the merchant to begin selecting your payment tokens.
