@@ -18,15 +18,20 @@ export default function QRScanner({ onScan }) {
     // Small delay to ensure DOM is ready
     const timer = setTimeout(() => {
       try {
-        // Create scanner instance with better config
+        // Create scanner instance with optimized config for desktop
         const scanner = new Html5QrcodeScanner(
           'qr-reader', // ID of the div element
           {
             fps: 10, // Frames per second for scanning
             qrbox: { width: 250, height: 250 }, // Size of scanning box
             aspectRatio: 1.0,
-            showTorchButtonIfSupported: true, // Show flashlight if available
-            showZoomSliderIfSupported: true, // Show zoom if available
+            showTorchButtonIfSupported: false, // Hide flashlight for cleaner UI
+            showZoomSliderIfSupported: false, // Hide zoom for cleaner UI
+            videoConstraints: {
+              width: { ideal: 640 },
+              height: { ideal: 480 },
+              facingMode: "environment"
+            }
           },
           false // Verbose logging disabled
         );
@@ -101,7 +106,6 @@ export default function QRScanner({ onScan }) {
       {/* Error state */}
       {error && (
         <div className="bg-red-500/10 rounded-lg p-6 text-center border border-red-500/20">
-          <div className="text-4xl mb-3">⚠️</div>
           <p className="text-white/90 font-semibold mb-2">Camera Error</p>
           <p className="text-white/70 text-sm">{error}</p>
           <p className="text-white/50 text-xs mt-3">
@@ -117,14 +121,11 @@ export default function QRScanner({ onScan }) {
         style={{ display: isInitialized ? 'block' : 'none' }}
       ></div>
       
-      {/* Instructions - Show when scanning is active */}
+      {/* Instructions - Clean and subtle */}
       {isInitialized && (
-        <div className="mt-4 text-center">
-          <p className="text-sm text-white/70">
-            Point your camera at the QR code
-          </p>
-          <p className="text-xs text-white/50 mt-2">
-            Make sure the QR code is well-lit and within the frame
+        <div className="mt-3 text-center">
+          <p className="text-xs text-white/50">
+            Position the QR code within the frame
           </p>
         </div>
       )}

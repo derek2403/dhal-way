@@ -172,6 +172,22 @@ export default function Transfer() {
     return () => clearInterval(interval);
   }, []);
 
+  // Effect to lock/unlock body scroll when scanner modal is open
+  useEffect(() => {
+    if (showScanner) {
+      // Disable scrolling when modal is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Re-enable scrolling when modal is closed
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup - ensure scroll is re-enabled when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showScanner]);
+
   // Make RainbowKit modal use a full-page blurred overlay on this page
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -313,7 +329,6 @@ export default function Transfer() {
           {!portfolioData && isConnected && (
             <div className="w-full flex items-center justify-center min-h-[60vh]">
               <div className="glass-card flex flex-col justify-start p-8 relative max-w-2xl mx-auto w-full text-center">
-                <div className="text-6xl mb-6">📱</div>
                 <h3 className="text-2xl font-bold mb-4 text-white">Scan QR Code to Start Payment</h3>
                 <p className="text-white/70 mb-6">
                   Please scan the QR code from the merchant page to begin selecting your payment tokens.
@@ -322,7 +337,7 @@ export default function Transfer() {
                   onClick={() => setShowScanner(true)}
                   className="mx-auto px-8 py-4 bg-white/20 hover:bg-white/30 border border-white/30 rounded-lg text-white font-semibold transition-all duration-200 text-lg"
                 >
-                  📷 Open QR Scanner
+                  Open QR Scanner
                 </button>
                 <div className="bg-white/5 rounded-lg p-4 border border-white/10 mt-6">
                   <p className="text-sm text-white/50">
@@ -337,7 +352,7 @@ export default function Transfer() {
           {portfolioData && (
             <div className="w-full">
               <div className="glass-card flex flex-col justify-start p-6 relative max-w-4xl mx-auto w-full">
-                <h3 className="text-xl font-bold mb-4 text-white">📱 Scanned Portfolio</h3>
+                <h3 className="text-xl font-bold mb-4 text-white">Scanned Portfolio</h3>
                 <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                   <p className="text-sm text-white/70 mb-2">Recipient Wallet:</p>
                   <p className="text-white font-mono text-sm break-all">{portfolioData.walletAddress}</p>
@@ -371,7 +386,7 @@ export default function Transfer() {
           {portfolioData && !isAmountSet && (
             <div className="w-full">
               <div className="glass-card flex flex-col justify-start p-6 relative max-w-4xl mx-auto w-full">
-                <h3 className="text-xl font-bold mb-4 text-white">💰 Enter Payment Amount</h3>
+                <h3 className="text-xl font-bold mb-4 text-white">Enter Payment Amount</h3>
                 <div className="bg-white/5 rounded-lg p-6 border border-white/10">
                   <p className="text-sm text-white/70 mb-4">How much would you like to pay?</p>
                   <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
@@ -462,33 +477,38 @@ export default function Transfer() {
 
       {/* QR Scanner Modal */}
       {showScanner && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-          {/* Backdrop */}
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
+          {/* Enhanced Backdrop */}
           <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/85 backdrop-blur-md"
             onClick={() => setShowScanner(false)}
           />
           
-          {/* Scanner Container */}
-          <div className="relative z-10 w-full max-w-lg">
-            <div className="glass-card p-6">
+          {/* Scanner Container - Clean and Compact */}
+          <div className="relative z-10 w-full max-w-2xl my-8">
+            <div className="glass-card p-6 border-2 border-white/20 shadow-2xl">
+              {/* Header - Compact */}
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-white">Scan Merchant QR Code</h3>
+                <h3 className="text-xl font-bold text-white">Scan QR Code</h3>
                 <button
                   onClick={() => setShowScanner(false)}
-                  className="text-white/70 hover:text-white transition-colors text-2xl leading-none"
+                  className="text-white/70 hover:text-white hover:bg-white/10 transition-all text-2xl leading-none w-9 h-9 rounded-lg flex items-center justify-center"
+                  aria-label="Close"
                 >
                   ×
                 </button>
               </div>
               
               {/* QR Scanner Component */}
-              <QRScanner onScan={handleQRScan} />
+              <div className="max-h-[70vh] overflow-auto">
+                <QRScanner onScan={handleQRScan} />
+              </div>
               
-              <div className="mt-4 text-center">
+              {/* Footer - Compact */}
+              <div className="mt-4 flex justify-center">
                 <button
                   onClick={() => setShowScanner(false)}
-                  className="px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white text-sm transition-all duration-200"
+                  className="px-6 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white text-sm font-medium transition-all duration-200 hover:scale-105"
                 >
                   Cancel
                 </button>

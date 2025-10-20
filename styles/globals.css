@@ -434,55 +434,180 @@ div[data-rk] div[role="dialog"] * {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-/* QR Scanner Styling - Match dark theme */
+/* QR Scanner Styling - Premium glass-card design */
 #qr-reader {
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: none;
+  background: transparent;
+  max-width: 100%;
 }
 
-/* Style the video element */
+/* Main scanner container - Constrained size */
+#qr-reader__scan_region {
+  border: none !important;
+  background: transparent !important;
+  max-width: 500px !important;
+  max-height: 500px !important;
+  margin: 0 auto !important;
+  position: relative !important;
+}
+
+/* Style the video element - Fixed size */
 #qr-reader video {
-  border-radius: 8px;
+  border-radius: 12px;
   width: 100% !important;
+  max-width: 500px !important;
+  max-height: 400px !important;
+  object-fit: cover !important;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  margin: 0 auto !important;
+  display: block !important;
 }
 
-/* Style scanner buttons */
+/* Camera selection section - Clean and compact */
+#qr-reader__dashboard_section_csr {
+  border: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  border-radius: 0 !important;
+  padding: 16px 0 !important;
+  margin-top: 16px !important;
+  text-align: center !important;
+  max-width: 500px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Style scanner buttons - Clean and minimal */
 #qr-reader button {
   background: rgba(255, 255, 255, 0.1) !important;
   color: white !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 8px !important;
-  padding: 8px 16px !important;
-  font-size: 14px !important;
+  padding: 10px 20px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
   transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  text-transform: none !important;
+  letter-spacing: 0.2px !important;
+  margin: 8px auto !important;
+  display: block !important;
+  max-width: 200px !important;
 }
 
 #qr-reader button:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.18) !important;
   border-color: rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-1px) !important;
 }
 
-/* Style select dropdowns in scanner */
+/* Style select dropdowns in scanner - Clean and compact */
 #qr-reader select {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
   color: white !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 8px !important;
-  padding: 8px !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  backdrop-filter: blur(10px) !important;
+  margin: 8px auto !important;
+  display: block !important;
+  max-width: 300px !important;
 }
 
-/* Style the scanner info text */
-#qr-reader__dashboard_section_csr {
-  color: rgba(255, 255, 255, 0.7) !important;
+#qr-reader select:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
 }
 
-/* Hide unnecessary elements */
-#qr-reader__dashboard_section_fsr {
+#qr-reader select:focus {
+  outline: none !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Style option elements */
+#qr-reader select option {
+  background: rgba(20, 20, 20, 0.95) !important;
+  color: white !important;
+  padding: 12px !important;
+}
+
+/* Style the scanner labels - Subtle and clean */
+#qr-reader__dashboard_section_csr > div,
+#qr-reader__dashboard_section_csr > span {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  margin-bottom: 6px !important;
+  text-align: center !important;
+  display: block !important;
+}
+
+/* Hide camera count text */
+#qr-reader__dashboard_section_csr > div:first-child {
   display: none !important;
 }
 
-/* Style the scanning area */
-#qr-shaded-region {
+/* Hide the file scanner section completely */
+#qr-reader__dashboard_section_fsr,
+#qr-reader__dashboard_section_fsr > *,
+#html5-qrcode-anchor-scan-type-change {
+  display: none !important;
+}
+
+/* Hide the "Scan an Image File" link */
+#qr-reader a[id*="scan-type-change"],
+#qr-reader__dashboard_section > a {
+  display: none !important;
+}
+
+/* Style the camera permission message */
+#qr-reader__status_span {
+  color: rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  padding: 12px 20px !important;
   border-radius: 8px !important;
+  font-size: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  margin: 12px 0 !important;
+  display: inline-block !important;
+}
+
+/* Style the scanning area frame */
+#qr-shaded-region {
+  border-radius: 12px !important;
+  border: 3px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Center the "Scan an Image File" link and style it */
+#qr-reader__filescan_input {
+  display: none !important;
+}
+
+#qr-reader__dashboard_section_fsr > a,
+#qr-reader a {
+  color: rgba(255, 255, 255, 0.7) !important;
+  text-decoration: none !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+  display: inline-block !important;
+  margin-top: 12px !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+#qr-reader__dashboard_section_fsr > a:hover,
+#qr-reader a:hover {
+  color: rgba(255, 255, 255, 0.95) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
 }
