@@ -6,6 +6,7 @@ import { Spotlight } from '@/components/ui/spotlight-new';
 import AtomicTransfer from '../components/AtomicTransfer';
 import TokenBalance from '../components/TokenBalance';
 import AtomicEscrowTransfer from '../components/AtomicEscrowTransfer';
+import QRScanner from '../components/QRScanner';
 
 // Pyth price feed IDs mapping
 const PYTH_PRICE_IDS = {
@@ -25,8 +26,10 @@ export default function Transfer() {
   const [pricesError, setPricesError] = useState(null);
   const [portfolioData, setPortfolioData] = useState(null);
   
-  // Payment limit configuration
-  const MAX_PAYMENT_AMOUNT = 100; // $100 limit
+  // Payment amount configuration - user specified
+  const [paymentAmount, setPaymentAmount] = useState(''); // User input amount
+  const [isAmountSet, setIsAmountSet] = useState(false); // Track if amount is confirmed
+  const [showScanner, setShowScanner] = useState(false); // Show QR scanner modal
 
   // Function to fetch prices from Hermes API
   const fetchTokenPrices = async () => {
@@ -88,6 +91,8 @@ export default function Transfer() {
 
   // Wrapper for setTransferAmounts that enforces the payment limit
   const setTransferAmountsWithLimit = (newAmounts) => {
+    const maxAmount = parseFloat(paymentAmount) || 0; // Use user-specified amount
+    
     if (typeof newAmounts === 'function') {
       setTransferAmounts(prev => {
         const updated = newAmounts(prev);
@@ -98,7 +103,7 @@ export default function Transfer() {
         }, 0);
         
         // Only update if within limit
-        if (totalValue <= MAX_PAYMENT_AMOUNT) {
+        if (totalValue <= maxAmount) {
           return updated;
         }
         return prev; // Return previous state if limit exceeded
@@ -111,8 +116,34 @@ export default function Transfer() {
         return total + (amount * tokenPrice);
       }, 0);
       
-      if (totalValue <= MAX_PAYMENT_AMOUNT) {
+      if (totalValue <= maxAmount) {
         setTransferAmounts(newAmounts);
+      }
+    }
+  };
+
+  // Function to handle scanned QR code data
+  const handleQRScan = (scannedData) => {
+    try {
+      // Try parsing as JSON first (simple QR format)
+      const parsedData = JSON.parse(scannedData);
+      setPortfolioData(parsedData);
+      setShowScanner(false);
+    } catch (error) {
+      // If JSON parsing fails, try parsing as URL (detailed QR format)
+      try {
+        const url = new URL(scannedData);
+        const portfolioParam = url.searchParams.get('portfolio');
+        if (portfolioParam) {
+          const parsedPortfolio = JSON.parse(decodeURIComponent(portfolioParam));
+          setPortfolioData(parsedPortfolio);
+          setShowScanner(false);
+        } else {
+          alert('Invalid QR code format. Please scan a valid merchant QR code.');
+        }
+      } catch (urlError) {
+        console.error('Error parsing QR code:', error, urlError);
+        alert('Unable to read QR code. Please try again.');
       }
     }
   };
@@ -278,6 +309,30 @@ export default function Transfer() {
             : 'py-4 sm:py-6 lg:py-8'
         }`}>
         <div className={!isConnected ? '' : 'space-y-6 sm:space-y-8 lg:space-y-10'}>
+          {/* Prompt to scan QR code if no portfolio data */}
+          {!portfolioData && isConnected && (
+            <div className="w-full flex items-center justify-center min-h-[60vh]">
+              <div className="glass-card flex flex-col justify-start p-8 relative max-w-2xl mx-auto w-full text-center">
+                <div className="text-6xl mb-6">📱</div>
+                <h3 className="text-2xl font-bold mb-4 text-white">Scan QR Code to Start Payment</h3>
+                <p className="text-white/70 mb-6">
+                  Please scan the QR code from the merchant page to begin selecting your payment tokens.
+                </p>
+                <button
+                  onClick={() => setShowScanner(true)}
+                  className="mx-auto px-8 py-4 bg-white/20 hover:bg-white/30 border border-white/30 rounded-lg text-white font-semibold transition-all duration-200 text-lg"
+                >
+                  📷 Open QR Scanner
+                </button>
+                <div className="bg-white/5 rounded-lg p-4 border border-white/10 mt-6">
+                  <p className="text-sm text-white/50">
+                    The merchant will show you a QR code with their wallet address and preferred payment tokens.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Portfolio Info from QR Code */}
           {portfolioData && (
             <div className="w-full">
@@ -312,18 +367,91 @@ export default function Transfer() {
             </div>
           )}
 
-          <div className="w-full">
+          {/* Payment Amount Input - Show only after QR is scanned */}
+          {portfolioData && !isAmountSet && (
+            <div className="w-full">
+              <div className="glass-card flex flex-col justify-start p-6 relative max-w-4xl mx-auto w-full">
+                <h3 className="text-xl font-bold mb-4 text-white">💰 Enter Payment Amount</h3>
+                <div className="bg-white/5 rounded-lg p-6 border border-white/10">
+                  <p className="text-sm text-white/70 mb-4">How much would you like to pay?</p>
+                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+                    <div className="flex-1 w-full">
+                      <label className="block text-sm text-white/70 mb-2">Amount (USD)</label>
+                      <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 text-lg">$</span>
+                        <input
+                          type="number"
+                          min="0.01"
+                          step="0.01"
+                          value={paymentAmount}
+                          onChange={(e) => setPaymentAmount(e.target.value)}
+                          placeholder="0.00"
+                          className="w-full bg-white/10 border border-white/20 rounded-lg px-4 pl-8 py-3 text-white text-lg placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/40"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        const amount = parseFloat(paymentAmount);
+                        if (!amount || amount <= 0) {
+                          alert('Please enter a valid payment amount');
+                          return;
+                        }
+                        setIsAmountSet(true);
+                      }}
+                      className="px-6 py-3 bg-white/20 hover:bg-white/30 border border-white/30 rounded-lg text-white font-semibold transition-all duration-200 whitespace-nowrap"
+                    >
+                      Confirm Amount
+                    </button>
+                  </div>
+                  {paymentAmount && parseFloat(paymentAmount) > 0 && (
+                    <p className="text-sm text-white/50 mt-3">
+                      You will be able to select tokens worth ${parseFloat(paymentAmount).toFixed(2)}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Show confirmed amount if set */}
+          {isAmountSet && (
+            <div className="w-full">
+              <div className="glass-card flex flex-col justify-start p-4 relative max-w-4xl mx-auto w-full">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-white/70">Payment Amount:</p>
+                    <p className="text-2xl font-bold text-white">${parseFloat(paymentAmount).toFixed(2)}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsAmountSet(false);
+                      setTransferAmounts({});
+                    }}
+                    className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white text-sm transition-all duration-200"
+                  >
+                    Change Amount
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Token Balance - Blurred until amount is set */}
+          <div className={`w-full transition-all duration-300 ${!isAmountSet ? 'blur-md pointer-events-none select-none' : ''}`}>
             <TokenBalance 
               transferAmounts={transferAmounts}
               setTransferAmounts={setTransferAmountsWithLimit}
               tokenPrices={tokenPrices}
               pricesLoading={pricesLoading}
               pricesError={pricesError}
-              maxPaymentAmount={MAX_PAYMENT_AMOUNT}
+              maxPaymentAmount={parseFloat(paymentAmount) || 0}
               currentTotalUSD={calculateTotalUSDValue()}
             />
           </div>
-          <div className="w-full">
+
+          {/* Atomic Transfer - Also blurred until amount is set */}
+          <div className={`w-full transition-all duration-300 ${!isAmountSet ? 'blur-md pointer-events-none select-none' : ''}`}>
             <AtomicTransfer 
               transferAmounts={transferAmounts}
             />
@@ -331,6 +459,44 @@ export default function Transfer() {
         </div>
         </main>
       </div>
+
+      {/* QR Scanner Modal */}
+      {showScanner && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setShowScanner(false)}
+          />
+          
+          {/* Scanner Container */}
+          <div className="relative z-10 w-full max-w-lg">
+            <div className="glass-card p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-white">Scan Merchant QR Code</h3>
+                <button
+                  onClick={() => setShowScanner(false)}
+                  className="text-white/70 hover:text-white transition-colors text-2xl leading-none"
+                >
+                  ×
+                </button>
+              </div>
+              
+              {/* QR Scanner Component */}
+              <QRScanner onScan={handleQRScan} />
+              
+              <div className="mt-4 text-center">
+                <button
+                  onClick={() => setShowScanner(false)}
+                  className="px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white text-sm transition-all duration-200"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

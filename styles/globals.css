@@ -433,3 +433,56 @@ div[data-rk] div[role="dialog"] * {
   background: rgba(255, 255, 255, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
+
+/* QR Scanner Styling - Match dark theme */
+#qr-reader {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Style the video element */
+#qr-reader video {
+  border-radius: 8px;
+  width: 100% !important;
+}
+
+/* Style scanner buttons */
+#qr-reader button {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+#qr-reader button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Style select dropdowns in scanner */
+#qr-reader select {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px !important;
+  padding: 8px !important;
+}
+
+/* Style the scanner info text */
+#qr-reader__dashboard_section_csr {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Hide unnecessary elements */
+#qr-reader__dashboard_section_fsr {
+  display: none !important;
+}
+
+/* Style the scanning area */
+#qr-shaded-region {
+  border-radius: 8px !important;
+}
