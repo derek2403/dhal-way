@@ -349,7 +349,7 @@ export default function TokenBalance({ transferAmounts = {}, setTransferAmounts,
 
   if (!isConnected) {
     return (
-      <div className="glass-card flex flex-col justify-start p-6 relative max-w-4xl mx-auto w-full" style={{ width: '100%', maxWidth: '800px' }}>
+      <div className="glass-card p-4 sm:p-6 lg:p-8 text-center max-w-sm sm:max-w-md lg:max-w-2xl w-full mx-auto relative">
         <BorderBeam
           size={120}
           duration={4}
@@ -357,7 +357,8 @@ export default function TokenBalance({ transferAmounts = {}, setTransferAmounts,
           colorTo="#ffffff"
           delay={1}
         />
-        <p className="text-white/80 text-center">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 lg:mb-6 text-white/90">Connect Your Wallet</h1>
+        <p className="text-sm sm:text-base lg:text-lg text-white/70">
           Please connect your wallet to view multi-chain token balances
         </p>
       </div>

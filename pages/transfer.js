@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useAccount } from 'wagmi';
 import { Header } from '../components/Header';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import AtomicTransfer from '../components/AtomicTransfer';
@@ -17,6 +18,7 @@ const PYTH_PRICE_IDS = {
 
 export default function Transfer() {
   const router = useRouter();
+  const { isConnected } = useAccount();
   const [transferAmounts, setTransferAmounts] = useState({});
   const [tokenPrices, setTokenPrices] = useState({});
   const [pricesLoading, setPricesLoading] = useState(true);
@@ -268,10 +270,14 @@ export default function Transfer() {
           xOffset={120}
         />
       </div>
-      <div className="relative z-10">
+      <div className="relative z-50">
         <Header showNavigation={true} />
-        <main className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl mx-auto">
-        <div className="space-y-6 sm:space-y-8 lg:space-y-10">
+        <main className={`px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto ${
+          !isConnected 
+            ? 'flex items-center justify-center h-[calc(100vh-120px)]' 
+            : 'py-4 sm:py-6 lg:py-8'
+        }`}>
+        <div className={!isConnected ? '' : 'space-y-6 sm:space-y-8 lg:space-y-10'}>
           {/* Portfolio Info from QR Code */}
           {portfolioData && (
             <div className="w-full">
