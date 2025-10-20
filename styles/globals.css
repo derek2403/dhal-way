@@ -443,6 +443,13 @@ div[data-rk] div[role="dialog"] * {
   width: 100%;
   max-width: 450px;
   margin: 0 auto;
+  min-height: 0 !important;
+}
+
+/* Remove all top padding/margin from scanner */
+#qr-reader > div:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
 /* Main scanner container - Constrained size */
@@ -450,8 +457,21 @@ div[data-rk] div[role="dialog"] * {
   border: none !important;
   background: transparent !important;
   width: 100% !important;
-  margin: 0 auto !important;
+  margin: 0 !important;
+  padding: 16px !important;
   display: block !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* Collapse the scan region entirely when camera preview is not active */
+#qr-reader__scan_region:not(:has(video, canvas)) {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  min-height: 0 !important;
 }
 
 /* Style the video element - Fixed size and centered */
@@ -473,12 +493,12 @@ div[data-rk] div[role="dialog"] * {
   background: transparent !important;
   backdrop-filter: none !important;
   border-radius: 0 !important;
-  padding: 12px 0 !important;
-  margin-top: 12px !important;
+  padding: 16px !important;
+  margin: 0 auto !important;
   text-align: center !important;
   max-width: 450px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+  min-height: 0 !important;
+  height: auto !important;
 }
 
 /* Style scanner buttons - Clean and minimal */
@@ -578,6 +598,32 @@ div[data-rk] div[role="dialog"] * {
 #qr-reader__dashboard img,
 #qr-reader__dashboard svg {
   display: none !important;
+}
+
+/* Hide the header message area completely to remove blank space */
+#qr-reader__header_message,
+#qr-reader__camera_permission_button,
+#qr-reader__camera_selection {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Remove all spacing from dashboard */
+#qr-reader__dashboard,
+#qr-reader__dashboard_section {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* Remove spacing from all direct children */
+#qr-reader > * {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  min-height: 0 !important;
 }
 
 /* Style the camera permission message */
