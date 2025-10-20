@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ethers } from 'ethers'
 import { Spotlight } from '@/components/ui/spotlight-new'
 import { Header } from '../components/Header'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ChainSelector from '@/components/ChainSelector'
 import PortfolioChart from '@/components/PortfolioChart'
 import TokenGrid from '@/components/TokenGrid'
@@ -347,10 +348,77 @@ const MerchantPage = () => {
         <Header showNavigation={true} />
         <div className="max-w-7xl mx-auto p-3 min-h-[calc(100vh-120px)] lg:h-[calc(100vh-120px)]">
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:h-full">
+        {/* Mobile Tab Layout - Only on mobile */}
+        <div className="lg:hidden">
+          <Tabs defaultValue="select" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-lg border border-white/20 mb-4">
+              <TabsTrigger value="select" className="data-[state=active]:bg-white/20 text-white/70 data-[state=active]:text-white">
+                Select Tokens
+              </TabsTrigger>
+              <TabsTrigger value="review" className="data-[state=active]:bg-white/20 text-white/70 data-[state=active]:text-white">
+                Review & QR
+              </TabsTrigger>
+            </TabsList>
+            
+            {/* Tab 1: Select Tokens - Chain Selector + Token Grid */}
+            <TabsContent value="select" className="space-y-3">
+              <ChainSelector
+                chains={chains}
+                currentChain={currentChain}
+                setCurrentChain={setCurrentChain}
+                selectedChains={selectedChains}
+              />
+              <TokenGrid
+                chains={chains}
+                currentChain={currentChain}
+                tokensByChain={tokensByChain}
+                selectedChains={selectedChains}
+                handleTokenClick={handleTokenClick}
+                totalAllocation={totalAllocation}
+              />
+            </TabsContent>
+            
+            {/* Tab 2: Review & QR - Portfolio Summary + Chart + Actions */}
+            <TabsContent value="review" className="space-y-3">
+              <AnimatePresence>
+                {Object.keys(selectedChains).length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <PortfolioSummary
+                      selectedChains={selectedChains}
+                      chains={chains}
+                      tokensByChain={tokensByChain}
+                      totalAllocation={totalAllocation}
+                      removeToken={removeToken}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
+              <PortfolioChart
+                totalAllocation={totalAllocation}
+                chartData={chartData}
+                chartOptions={chartOptions}
+                generateQRCode={generateSimpleQRCode}
+                generateDetailedQRCode={generateQRCode}
+                resetSelection={resetSelection}
+                selectedChains={selectedChains}
+                chains={chains}
+                removeToken={removeToken}
+              />
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        {/* Desktop Grid Layout - Only on desktop */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-3 h-full">
             {/* Left Panel - Payment Chain Selection */}
           <motion.div 
-            className="lg:col-span-1 lg:h-full flex flex-col gap-3"
+            className="lg:col-span-1 h-full flex flex-col gap-3"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -386,7 +454,7 @@ const MerchantPage = () => {
               
           {/* Center Panel - Payment Preferences */}
           <motion.div 
-            className="lg:col-span-1 lg:h-full"
+            className="lg:col-span-1 h-full"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -406,7 +474,7 @@ const MerchantPage = () => {
             
           {/* Right Panel - Available Payment Tokens */}
           <motion.div 
-            className="lg:col-span-1 lg:h-full"
+            className="lg:col-span-1 h-full"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
