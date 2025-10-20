@@ -331,7 +331,7 @@ export default function Transfer() {
               <div className="glass-card flex flex-col justify-start p-8 relative max-w-2xl mx-auto w-full text-center">
                 <h3 className="text-2xl font-bold mb-4 text-white">Scan QR Code to Start Payment</h3>
                 <p className="text-white/70 mb-6">
-                  Please scan the QR code from the merchant page to begin selecting your payment tokens.
+                  Please scan the QR code from the merchant to begin selecting your payment tokens.
                 </p>
                 <button
                   onClick={() => setShowScanner(true)}
@@ -477,7 +477,7 @@ export default function Transfer() {
 
       {/* QR Scanner Modal */}
       {showScanner && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 py-12">
           {/* Enhanced Backdrop */}
           <div 
             className="absolute inset-0 bg-black/85 backdrop-blur-md"
@@ -485,10 +485,10 @@ export default function Transfer() {
           />
           
           {/* Scanner Container - Clean and Compact */}
-          <div className="relative z-10 w-full max-w-2xl my-8">
-            <div className="glass-card p-6 border-2 border-white/20 shadow-2xl">
+          <div className="relative z-10 w-full max-w-2xl">
+            <div className="glass-card p-5 border-2 border-white/20 shadow-2xl">
               {/* Header - Compact */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xl font-bold text-white">Scan QR Code</h3>
                 <button
                   onClick={() => setShowScanner(false)}
@@ -500,15 +500,15 @@ export default function Transfer() {
               </div>
               
               {/* QR Scanner Component */}
-              <div className="max-h-[70vh] overflow-auto">
+              <div>
                 <QRScanner onScan={handleQRScan} />
               </div>
               
               {/* Footer - Compact */}
-              <div className="mt-4 flex justify-center">
+              <div className="mt-3 flex justify-center">
                 <button
                   onClick={() => setShowScanner(false)}
-                  className="px-6 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white text-sm font-medium transition-all duration-200 hover:scale-105"
+                  className="px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white text-sm font-medium transition-all duration-200 hover:scale-105"
                 >
                   Cancel
                 </button>

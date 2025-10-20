@@ -437,33 +437,34 @@ div[data-rk] div[role="dialog"] * {
 /* QR Scanner Styling - Premium glass-card design */
 #qr-reader {
   border-radius: 16px;
-  overflow: hidden;
+  overflow: visible;
   border: none;
   background: transparent;
-  max-width: 100%;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
 }
 
 /* Main scanner container - Constrained size */
 #qr-reader__scan_region {
   border: none !important;
   background: transparent !important;
-  max-width: 500px !important;
-  max-height: 500px !important;
-  margin: 0 auto !important;
-  position: relative !important;
-}
-
-/* Style the video element - Fixed size */
-#qr-reader video {
-  border-radius: 12px;
   width: 100% !important;
-  max-width: 500px !important;
-  max-height: 400px !important;
-  object-fit: cover !important;
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   margin: 0 auto !important;
   display: block !important;
+}
+
+/* Style the video element - Fixed size and centered */
+#qr-reader video {
+  border-radius: 12px !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: 400px !important;
+  object-fit: contain !important;
+  border: 2px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  display: block !important;
+  margin: 0 auto !important;
 }
 
 /* Camera selection section - Clean and compact */
@@ -472,10 +473,10 @@ div[data-rk] div[role="dialog"] * {
   background: transparent !important;
   backdrop-filter: none !important;
   border-radius: 0 !important;
-  padding: 16px 0 !important;
-  margin-top: 16px !important;
+  padding: 12px 0 !important;
+  margin-top: 12px !important;
   text-align: center !important;
-  max-width: 500px !important;
+  max-width: 450px !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
@@ -486,16 +487,16 @@ div[data-rk] div[role="dialog"] * {
   color: white !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 8px !important;
-  padding: 10px 20px !important;
+  padding: 8px 18px !important;
   font-size: 13px !important;
   font-weight: 500 !important;
   transition: all 0.2s ease !important;
   cursor: pointer !important;
   text-transform: none !important;
   letter-spacing: 0.2px !important;
-  margin: 8px auto !important;
+  margin: 6px auto !important;
   display: block !important;
-  max-width: 200px !important;
+  max-width: 180px !important;
 }
 
 #qr-reader button:hover {
@@ -564,6 +565,18 @@ div[data-rk] div[role="dialog"] * {
 /* Hide the "Scan an Image File" link */
 #qr-reader a[id*="scan-type-change"],
 #qr-reader__dashboard_section > a {
+  display: none !important;
+}
+
+/* Hide all icons in the scanner */
+#qr-reader img,
+#qr-reader svg,
+#qr-reader__scan_region img,
+#qr-reader__scan_region svg,
+#qr-reader__header_message img,
+#qr-reader__header_message svg,
+#qr-reader__dashboard img,
+#qr-reader__dashboard svg {
   display: none !important;
 }
 
