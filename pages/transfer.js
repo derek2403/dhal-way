@@ -390,7 +390,8 @@ export default function Transfer() {
     const payouts = [];
     const totalAmount = parseFloat(paymentAmount) || 0;
     
-    // Iterate through portfolio data (skip walletAddress)
+    // Collect all payouts first to handle rounding correctly
+    const rawPayouts = [];
     Object.entries(portfolioData).forEach(([chainName, tokens]) => {
       if (chainName === 'walletAddress') return;
       
@@ -400,14 +401,38 @@ export default function Transfer() {
       
       // Iterate through tokens in this chain
       Object.entries(tokens).forEach(([tokenSymbol, percentage]) => {
-        const usdValue = ((totalAmount * percentage) / 100).toFixed(2);
+        const exactValue = (totalAmount * percentage) / 100;
         
-        payouts.push({
+        rawPayouts.push({
           chain: chainKey,
           token: tokenSymbol,
-          usdValue: usdValue,
+          exactValue: exactValue,
+          percentage: percentage,
         });
       });
+    });
+    
+    // Round values and adjust last item to ensure total matches exactly
+    let runningTotal = 0;
+    rawPayouts.forEach((payout, index) => {
+      if (index === rawPayouts.length - 1) {
+        // Last item: use remaining amount to avoid rounding errors
+        const remaining = totalAmount - runningTotal;
+        payouts.push({
+          chain: payout.chain,
+          token: payout.token,
+          usdValue: remaining.toFixed(2),
+        });
+      } else {
+        // Regular rounding for other items
+        const rounded = Math.floor(payout.exactValue * 100) / 100; // Floor to 2 decimals
+        runningTotal += rounded;
+        payouts.push({
+          chain: payout.chain,
+          token: payout.token,
+          usdValue: rounded.toFixed(2),
+        });
+      }
     });
     
     return payouts;
