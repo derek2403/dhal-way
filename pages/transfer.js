@@ -427,18 +427,16 @@ export default function Transfer() {
           {/* Show confirmed amount if set */}
           {isAmountSet && (
             <div className="w-full">
-              <div className="glass-card flex flex-col justify-start p-4 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-white/70">Payment Amount:</p>
-                    <p className="text-2xl font-bold text-white">${parseFloat(paymentAmount).toFixed(2)}</p>
-                  </div>
+              <div className="glass-card flex flex-col justify-start p-8 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
+                <div className="text-center">
+                  <p className="text-base text-white/70 mb-3">Payment Amount:</p>
+                  <p className="text-6xl font-bold text-white mb-6">${parseFloat(paymentAmount).toFixed(2)}</p>
                   <button
                     onClick={() => {
                       setIsAmountSet(false);
                       setTransferAmounts({});
                     }}
-                    className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white text-sm transition-all duration-200"
+                    className="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white font-medium transition-all duration-200"
                   >
                     Change Amount
                   </button>
