@@ -70,7 +70,7 @@ export const Header = ({ showNavigation = false }) => {
       )}
       
       {/* Logo and App Name - Left */}
-      <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
+      <Link href="/" className="flex items-center gap-2 sm:gap-3 lg:gap-4 cursor-pointer hover:opacity-80 transition-opacity">
         <Image 
           src="/icons/dhalway_1.png"
           alt="DhalWay Logo"
@@ -81,7 +81,7 @@ export const Header = ({ showNavigation = false }) => {
         <div className="select-none text-lg sm:text-2xl lg:text-3xl font-bold tracking-wide text-white/90">
           DhalWay
         </div>
-      </div>
+      </Link>
       
       {/* Navigation - Absolutely centered, hidden on mobile */}
       {showNavigation && (
