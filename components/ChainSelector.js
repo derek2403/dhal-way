@@ -11,7 +11,7 @@ const ChainSelector = ({
   selectedChains 
 }) => {
   return (
-    <div className="glass-card p-4 h-full flex flex-col">
+    <div className="glass-card p-4 flex flex-col lg:h-full">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-6 h-6 rounded-full bg-white/10 border border-white/10 flex items-center justify-center backdrop-blur-sm">
           <Link className="w-3 h-3 text-white/70" />

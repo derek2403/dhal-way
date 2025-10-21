@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useAccount } from 'wagmi';
 import { Header } from '../components/Header';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import AtomicTransfer from '../components/AtomicTransfer';
 import TokenBalance from '../components/TokenBalance';
 import AtomicEscrowTransfer from '../components/AtomicEscrowTransfer';
+import QRScanner from '../components/QRScanner';
+import { ScanLine } from 'lucide-react';
 
 // Pyth price feed IDs mapping
 const PYTH_PRICE_IDS = {
@@ -17,14 +20,44 @@ const PYTH_PRICE_IDS = {
 
 export default function Transfer() {
   const router = useRouter();
+  const { isConnected } = useAccount();
   const [transferAmounts, setTransferAmounts] = useState({});
   const [tokenPrices, setTokenPrices] = useState({});
   const [pricesLoading, setPricesLoading] = useState(true);
   const [pricesError, setPricesError] = useState(null);
   const [portfolioData, setPortfolioData] = useState(null);
   
-  // Payment limit configuration
-  const MAX_PAYMENT_AMOUNT = 100; // $100 limit
+  // Payment amount configuration - user specified
+  const [paymentAmount, setPaymentAmount] = useState('0.00'); // User input amount (formatted as dollars.cents)
+  const [isAmountSet, setIsAmountSet] = useState(false); // Track if amount is confirmed
+  const [showScanner, setShowScanner] = useState(false); // Show QR scanner modal
+  const [showAmountModal, setShowAmountModal] = useState(false); // Show payment amount modal
+
+  // Handle payment amount input like a money keypad (adds digits as cents)
+  const handlePaymentAmountChange = (e) => {
+    const value = e.target.value;
+    
+    // Only allow digits
+    const digitsOnly = value.replace(/\D/g, '');
+    
+    // Convert to number (cents) then to dollars
+    const cents = parseInt(digitsOnly || '0', 10);
+    const dollars = (cents / 100).toFixed(2);
+    
+    setPaymentAmount(dollars);
+  };
+
+  // Handle backspace/delete for payment amount
+  const handlePaymentAmountKeyDown = (e) => {
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+      e.preventDefault();
+      const current = paymentAmount.replace(/\D/g, '');
+      const newValue = current.slice(0, -1);
+      const cents = parseInt(newValue || '0', 10);
+      const dollars = (cents / 100).toFixed(2);
+      setPaymentAmount(dollars);
+    }
+  };
 
   // Function to fetch prices from Hermes API
   const fetchTokenPrices = async () => {
@@ -86,6 +119,8 @@ export default function Transfer() {
 
   // Wrapper for setTransferAmounts that enforces the payment limit
   const setTransferAmountsWithLimit = (newAmounts) => {
+    const maxAmount = parseFloat(paymentAmount) || 0; // Use user-specified amount
+    
     if (typeof newAmounts === 'function') {
       setTransferAmounts(prev => {
         const updated = newAmounts(prev);
@@ -96,7 +131,7 @@ export default function Transfer() {
         }, 0);
         
         // Only update if within limit
-        if (totalValue <= MAX_PAYMENT_AMOUNT) {
+        if (totalValue <= maxAmount) {
           return updated;
         }
         return prev; // Return previous state if limit exceeded
@@ -109,8 +144,36 @@ export default function Transfer() {
         return total + (amount * tokenPrice);
       }, 0);
       
-      if (totalValue <= MAX_PAYMENT_AMOUNT) {
+      if (totalValue <= maxAmount) {
         setTransferAmounts(newAmounts);
+      }
+    }
+  };
+
+  // Function to handle scanned QR code data
+  const handleQRScan = (scannedData) => {
+    try {
+      // Try parsing as JSON first (simple QR format)
+      const parsedData = JSON.parse(scannedData);
+      setPortfolioData(parsedData);
+      setShowScanner(false);
+      setShowAmountModal(true); // Show amount modal after successful scan
+    } catch (error) {
+      // If JSON parsing fails, try parsing as URL (detailed QR format)
+      try {
+        const url = new URL(scannedData);
+        const portfolioParam = url.searchParams.get('portfolio');
+        if (portfolioParam) {
+          const parsedPortfolio = JSON.parse(decodeURIComponent(portfolioParam));
+          setPortfolioData(parsedPortfolio);
+          setShowScanner(false);
+          setShowAmountModal(true); // Show amount modal after successful scan
+        } else {
+          alert('Invalid QR code format. Please scan a valid merchant QR code.');
+        }
+      } catch (urlError) {
+        console.error('Error parsing QR code:', error, urlError);
+        alert('Unable to read QR code. Please try again.');
       }
     }
   };
@@ -122,6 +185,7 @@ export default function Transfer() {
         const decodedData = decodeURIComponent(router.query.portfolio);
         const parsedPortfolio = JSON.parse(decodedData);
         setPortfolioData(parsedPortfolio);
+        setShowAmountModal(true); // Show amount modal when loading from URL
       } catch (error) {
         console.error('Error parsing portfolio data from URL:', error);
       }
@@ -138,6 +202,22 @@ export default function Transfer() {
     
     return () => clearInterval(interval);
   }, []);
+
+  // Effect to lock/unlock body scroll when scanner or amount modal is open
+  useEffect(() => {
+    if (showScanner || showAmountModal) {
+      // Disable scrolling when modal is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Re-enable scrolling when modal is closed
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup - ensure scroll is re-enabled when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showScanner, showAmountModal]);
 
   // Make RainbowKit modal use a full-page blurred overlay on this page
   useEffect(() => {
@@ -253,6 +333,13 @@ export default function Transfer() {
   }, []);
   const [merchant, setMerchant] = useState(''); // Merchant address for escrow
 
+  // Function to format wallet address - show first 6 and last 4 characters
+  const formatAddress = (address) => {
+    if (!address) return '';
+    if (address.length < 12) return address;
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+  };
+
   return (
     <div className="min-h-screen bg-black overflow-hidden relative">
       <div className="absolute inset-0 z-0">
@@ -268,63 +355,194 @@ export default function Transfer() {
           xOffset={120}
         />
       </div>
-      <div className="relative z-10">
-        <Header />
-        <main className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl mx-auto">
-        <div className="space-y-6 sm:space-y-8 lg:space-y-10">
+      <div className="relative z-50">
+        <Header showNavigation={true} />
+        <main className={`px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto ${
+          !isConnected 
+            ? 'flex items-center justify-center h-[calc(100vh-120px)]' 
+            : 'pt-3 pb-6 sm:pt-4 sm:pb-8'
+        }`}>
+        <div className={!isConnected ? '' : 'space-y-4 sm:space-y-5'}>
+          {/* Prompt to scan QR code if no portfolio data */}
+          {!portfolioData && isConnected && (
+            <div className="w-full flex justify-center">
+              <button
+                onClick={() => setShowScanner(true)}
+                className="glass-card p-12 hover:bg-white/10 transition-all duration-300 cursor-pointer group relative overflow-hidden border-2 border-white/20 hover:border-white/40 aspect-square"
+                style={{ width: '220px', height: '220px' }}
+              >
+                <div className="relative z-10 flex items-center justify-center h-full">
+                  <ScanLine 
+                    className="w-32 h-32 text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-300" 
+                    strokeWidth={1.5}
+                  />
+                </div>
+              </button>
+            </div>
+          )}
+
           {/* Portfolio Info from QR Code */}
           {portfolioData && (
             <div className="w-full">
-              <div className="glass-card flex flex-col justify-start p-6 relative max-w-4xl mx-auto w-full">
-                <h3 className="text-xl font-bold mb-4 text-white">📱 Scanned Portfolio</h3>
-                <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                  <p className="text-sm text-white/70 mb-2">Recipient Wallet:</p>
-                  <p className="text-white font-mono text-sm break-all">{portfolioData.walletAddress}</p>
-                  
-                  {Object.keys(portfolioData).length > 1 && (
-                    <div className="mt-4">
-                      <p className="text-sm text-white/70 mb-2">Portfolio Allocation:</p>
-                      <div className="space-y-2">
-                        {Object.entries(portfolioData).map(([chain, tokens]) => {
-                          if (chain === 'walletAddress' || typeof tokens !== 'object') return null;
-                          return (
-                            <div key={chain} className="text-sm">
-                              <span className="text-white/90 capitalize">{chain}: </span>
-                              {Object.entries(tokens).map(([token, percentage], index, arr) => (
-                                <span key={token} className="text-white/70">
-                                  {token} ({percentage}%){index < arr.length - 1 ? ', ' : ''}
-                                </span>
-                              ))}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+              <div className="glass-card flex flex-col justify-start p-4 sm:p-8 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
+                <div className="text-center">
+                  <p className="text-base text-white/70 mb-3">Recipient Wallet:</p>
+                  <p className="text-4xl sm:text-6xl font-bold text-white mb-6 font-mono break-all">{formatAddress(portfolioData.walletAddress)}</p>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="w-full">
+
+          {/* Show confirmed amount if set */}
+          {isAmountSet && (
+            <div className="w-full">
+              <div className="glass-card flex flex-col justify-start p-8 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
+                <div className="text-center">
+                  <p className="text-base text-white/70 mb-3">Payment Amount:</p>
+                  <p className="text-6xl font-bold text-white mb-6">${parseFloat(paymentAmount).toFixed(2)}</p>
+                  <button
+                    onClick={() => {
+                      setShowAmountModal(true);
+                    }}
+                    className="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white font-medium transition-all duration-200"
+                  >
+                    Change Amount
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Token Balance - Show tokens but hide controls until amount is set */}
+          <div className="w-full transition-all duration-300">
             <TokenBalance 
               transferAmounts={transferAmounts}
               setTransferAmounts={setTransferAmountsWithLimit}
               tokenPrices={tokenPrices}
               pricesLoading={pricesLoading}
               pricesError={pricesError}
-              maxPaymentAmount={MAX_PAYMENT_AMOUNT}
+              maxPaymentAmount={parseFloat(paymentAmount) || 0}
               currentTotalUSD={calculateTotalUSDValue()}
+              isAmountSet={isAmountSet}
             />
           </div>
-          <div className="w-full">
+
+          {/* Atomic Transfer - Hide until amount is set */}
+          <div className="w-full transition-all duration-300">
             <AtomicTransfer 
               transferAmounts={transferAmounts}
+              isAmountSet={isAmountSet}
             />
           </div>
         </div>
         </main>
       </div>
+
+      {/* QR Scanner Modal */}
+      {showScanner && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 py-12">
+          {/* Enhanced Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/85 backdrop-blur-md"
+            onClick={() => setShowScanner(false)}
+          />
+          
+          {/* Scanner Container - Clean and Compact */}
+          <div className="relative z-10 w-full max-w-2xl">
+            <div className="glass-card p-5 border-2 border-white/20 shadow-2xl">
+              {/* Header - Compact */}
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-xl font-bold text-white">Scan QR Code</h3>
+                <button
+                  onClick={() => setShowScanner(false)}
+                  className="text-white/70 hover:text-white hover:bg-white/10 transition-all text-2xl leading-none w-9 h-9 rounded-lg flex items-center justify-center"
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
+              
+              {/* QR Scanner Component */}
+              <div>
+                <QRScanner onScan={handleQRScan} />
+              </div>
+              
+              {/* Footer - Compact */}
+              <div className="mt-3 flex justify-center">
+                <button
+                  onClick={() => setShowScanner(false)}
+                  className="px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white text-sm font-medium transition-all duration-200 hover:scale-105"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Amount Modal */}
+      {showAmountModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          {/* Enhanced Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/85 backdrop-blur-md"
+            onClick={() => setShowAmountModal(false)}
+          />
+          
+          {/* Modal Container */}
+          <div className="relative z-10 w-full max-w-md">
+            <div className="glass-card p-6 border-2 border-white/20 shadow-2xl">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-white">Enter Payment Amount</h3>
+                <button
+                  onClick={() => setShowAmountModal(false)}
+                  className="text-white/70 hover:text-white hover:bg-white/10 transition-all text-2xl leading-none w-9 h-9 rounded-lg flex items-center justify-center"
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
+              
+              {/* Content */}
+              <div className="bg-white/5 rounded-lg p-6 border border-white/10">
+                <div className="mb-6">
+                  <label className="block text-sm text-white/70 mb-2">Amount (USD)</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 text-lg">$</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={paymentAmount}
+                      onChange={handlePaymentAmountChange}
+                      onKeyDown={handlePaymentAmountKeyDown}
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 pl-8 py-3 text-white text-lg focus:outline-none focus:ring-2 focus:ring-white/40"
+                      autoFocus
+                    />
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    const amount = parseFloat(paymentAmount);
+                    if (!amount || amount <= 0) {
+                      alert('Please enter a valid payment amount');
+                      return;
+                    }
+                    setIsAmountSet(true);
+                    setShowAmountModal(false);
+                  }}
+                  className="w-full px-6 py-3 bg-white/20 hover:bg-white/30 border border-white/30 rounded-lg text-white font-semibold transition-all duration-200"
+                >
+                  Confirm Amount
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -141,15 +141,28 @@ body {
 
 @media (max-width: 768px) {
   .glass-card {
-    width: auto;
+    width: 100%;
     min-height: auto;
   }
 }
 
 @media (max-width: 640px) {
   .glass-card {
-    width: auto;
+    width: 100%;
     min-height: auto;
+  }
+}
+
+/* Landing page (index) - mobile card width override */
+@media (max-width: 768px) {
+  .landing-mobile-card.glass-card {
+    width: 60% !important; /* slightly inset for nicer margins */
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-mobile-card.glass-card {
+    width: 60% !important;
   }
 }
 
@@ -192,6 +205,84 @@ body {
 
 .animate-flow-dot {
   animation: flow-dot 2.5s ease-in-out infinite;
+}
+
+/* Arrow Pulse Animation - syncs with flowing dots */
+@keyframes arrow-pulse {
+  0%, 50% {
+    opacity: 0.4;
+  }
+  70% {
+    opacity: 0.8;
+  }
+  85%, 100% {
+    opacity: 0.4;
+  }
+}
+
+.animate-flow-arrow {
+  animation: arrow-pulse 2.5s ease-in-out infinite;
+}
+
+/* Page Load Entrance Animations */
+/* Fade in and slide up from below */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade in and scale up slightly */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Simple fade in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Heading animation - fade in and slide up */
+.animate-heading {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+/* Card animations - staggered entrance */
+.animate-card-left {
+  animation: fadeInScale 0.4s ease-out forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+.animate-card-right {
+  animation: fadeInScale 0.5s ease-out forwards;
+  animation-delay: 0.9s;
+  opacity: 0;
+}
+
+/* Transition arrow animation */
+.animate-transition {
+  animation: fadeIn 0.5s ease-out forwards;
+  animation-delay: 0.6s;
+  opacity: 0;
 }
 
 .glass-card::before {
@@ -341,4 +432,260 @@ div[data-rk] div[role="dialog"] * {
 .slider::-moz-range-thumb:hover {
   background: rgba(255, 255, 255, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* QR Scanner Styling - Premium glass-card design */
+#qr-reader {
+  border-radius: 16px;
+  overflow: hidden !important;
+  border: none;
+  background: transparent;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  min-height: 0 !important;
+  display: block !important;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Remove all top padding/margin from scanner */
+#qr-reader > div {
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Main scanner container - Constrained size */
+#qr-reader__scan_region {
+  border: none !important;
+  background: transparent !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 16px !important;
+  display: block !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* Collapse the scan region entirely when camera preview is not active */
+#qr-reader__scan_region:not(:has(video, canvas)) {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  min-height: 0 !important;
+}
+
+/* Style ALL video elements in scanner - Fixed size and centered */
+#qr-reader video {
+  border-radius: 12px !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: 400px !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  border: 2px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  display: block !important;
+  margin: 0 auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  left: 0 !important;
+  top: 0 !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+}
+
+/* Canvas overlay for scanning box in direct mode */
+#qr-reader canvas {
+  display: none !important;
+}
+
+/* Camera selection section - Clean and compact */
+#qr-reader__dashboard_section_csr {
+  border: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  border-radius: 0 !important;
+  padding: 16px !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+  max-width: 450px !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* Style scanner buttons - Clean and minimal */
+#qr-reader button {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px !important;
+  padding: 8px 18px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  text-transform: none !important;
+  letter-spacing: 0.2px !important;
+  margin: 6px auto !important;
+  display: block !important;
+  max-width: 180px !important;
+}
+
+#qr-reader button:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Style select dropdowns in scanner - Clean and compact */
+#qr-reader select {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  backdrop-filter: blur(10px) !important;
+  margin: 8px auto !important;
+  display: block !important;
+  max-width: 300px !important;
+}
+
+#qr-reader select:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+#qr-reader select:focus {
+  outline: none !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Style option elements */
+#qr-reader select option {
+  background: rgba(20, 20, 20, 0.95) !important;
+  color: white !important;
+  padding: 12px !important;
+}
+
+/* Style the scanner labels - Subtle and clean */
+#qr-reader__dashboard_section_csr > div,
+#qr-reader__dashboard_section_csr > span {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  margin-bottom: 6px !important;
+  text-align: center !important;
+  display: block !important;
+}
+
+/* Hide camera count text */
+#qr-reader__dashboard_section_csr > div:first-child {
+  display: none !important;
+}
+
+/* Hide the file scanner section completely */
+#qr-reader__dashboard_section_fsr,
+#qr-reader__dashboard_section_fsr > *,
+#html5-qrcode-anchor-scan-type-change {
+  display: none !important;
+}
+
+/* Hide the "Scan an Image File" link */
+#qr-reader a[id*="scan-type-change"],
+#qr-reader__dashboard_section > a {
+  display: none !important;
+}
+
+/* Hide all icons in the scanner */
+#qr-reader img,
+#qr-reader svg,
+#qr-reader__scan_region img,
+#qr-reader__scan_region svg,
+#qr-reader__header_message img,
+#qr-reader__header_message svg,
+#qr-reader__dashboard img,
+#qr-reader__dashboard svg {
+  display: none !important;
+}
+
+/* Hide the header message area completely to remove blank space */
+#qr-reader__header_message,
+#qr-reader__camera_permission_button,
+#qr-reader__camera_selection {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Remove all spacing from dashboard */
+#qr-reader__dashboard,
+#qr-reader__dashboard_section {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* Remove spacing from all direct children */
+#qr-reader > * {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  min-height: 0 !important;
+}
+
+/* Style the camera permission message */
+#qr-reader__status_span {
+  color: rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  margin: 12px 0 !important;
+  display: inline-block !important;
+}
+
+/* Style the scanning area frame */
+#qr-shaded-region {
+  border-radius: 12px !important;
+  border: 3px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Center the "Scan an Image File" link and style it */
+#qr-reader__filescan_input {
+  display: none !important;
+}
+
+#qr-reader__dashboard_section_fsr > a,
+#qr-reader a {
+  color: rgba(255, 255, 255, 0.7) !important;
+  text-decoration: none !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+  display: inline-block !important;
+  margin-top: 12px !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+#qr-reader__dashboard_section_fsr > a:hover,
+#qr-reader a:hover {
+  color: rgba(255, 255, 255, 0.95) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
 }

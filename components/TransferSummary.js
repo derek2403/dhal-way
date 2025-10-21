@@ -4,10 +4,24 @@ import { CHAIN_CONFIGS } from '../lib/chainConfigs';
 import { parseTransferKey } from '../lib/tokenUtils';
 
 const TransferSummary = ({ transferAmounts, tokenPrices = {} }) => {
+  // Filter chains to only show those with transfers
+  const chainsWithTransfers = CHAIN_CONFIGS.filter(chain => {
+    const chainTransfers = Object.entries(transferAmounts).filter(([key, amount]) => {
+      const { chainId } = parseTransferKey(key);
+      return chainId === chain.chainId && amount > 0;
+    });
+    return chainTransfers.length > 0;
+  });
+
+  // Don't render the summary section if no chains have transfers
+  if (chainsWithTransfers.length === 0) {
+    return null;
+  }
+
   return (
     <div className="mt-6 pt-6 border-t border-white/10">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {CHAIN_CONFIGS.map(chain => {
+        {chainsWithTransfers.map(chain => {
           const chainTransfers = Object.entries(transferAmounts).filter(([key, amount]) => {
             const { chainId } = parseTransferKey(key);
             return chainId === chain.chainId && amount > 0;
@@ -25,46 +39,42 @@ const TransferSummary = ({ transferAmounts, tokenPrices = {} }) => {
                 />
                 {chain.name}
               </h4>
-              {chainTransfers.length > 0 ? (
-                <div className="space-y-1">
-                  {chainTransfers.map(([key, amount]) => {
+              <div className="space-y-1">
+                {chainTransfers.map(([key, amount]) => {
+                  const { symbol } = parseTransferKey(key);
+                  const tokenPrice = tokenPrices[symbol]?.price || 0;
+                  const usdValue = amount * tokenPrice;
+                  return (
+                    <div key={key} className="text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-white/70">{symbol}:</span>
+                        <span className="font-medium text-white">{amount.toFixed(4)}</span>
+                      </div>
+                      {tokenPrice > 0 && usdValue > 0 && (
+                        <div className="flex justify-end">
+                          <span className="text-xs text-white/60">${Number(usdValue).toFixed(2)}</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+                {/* Chain Total */}
+                {(() => {
+                  const chainTotal = chainTransfers.reduce((sum, [key, amount]) => {
                     const { symbol } = parseTransferKey(key);
                     const tokenPrice = tokenPrices[symbol]?.price || 0;
-                    const usdValue = amount * tokenPrice;
-                    return (
-                      <div key={key} className="text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-white/70">{symbol}:</span>
-                          <span className="font-medium text-white">{amount.toFixed(4)}</span>
-                        </div>
-                        {tokenPrice > 0 && usdValue > 0 && (
-                          <div className="flex justify-end">
-                            <span className="text-xs text-white/60">${Number(usdValue).toFixed(2)}</span>
-                          </div>
-                        )}
+                    return sum + (amount * tokenPrice);
+                  }, 0);
+                  return chainTotal > 0 ? (
+                    <div className="pt-2 mt-2 border-t border-white/20">
+                      <div className="flex justify-between text-sm font-medium">
+                        <span className="text-white">Total:</span>
+                        <span className="text-white">${Number(chainTotal).toFixed(2)}</span>
                       </div>
-                    );
-                  })}
-                  {/* Chain Total */}
-                  {(() => {
-                    const chainTotal = chainTransfers.reduce((sum, [key, amount]) => {
-                      const { symbol } = parseTransferKey(key);
-                      const tokenPrice = tokenPrices[symbol]?.price || 0;
-                      return sum + (amount * tokenPrice);
-                    }, 0);
-                    return chainTotal > 0 ? (
-                      <div className="pt-2 mt-2 border-t border-white/20">
-                        <div className="flex justify-between text-sm font-medium">
-                          <span className="text-white">Total:</span>
-                          <span className="text-white">${Number(chainTotal).toFixed(2)}</span>
-                        </div>
-                      </div>
-                    ) : null;
-                  })()}
-                </div>
-              ) : (
-                <p className="text-sm text-white/60">No transfers selected</p>
-              )}
+                    </div>
+                  ) : null;
+                })()}
+              </div>
             </div>
           );
         })}
