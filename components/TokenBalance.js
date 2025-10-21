@@ -388,7 +388,7 @@ export default function TokenBalance({ transferAmounts = {}, setTransferAmounts,
         delay={2}
       />
       <h2 className="text-2xl font-bold mb-6 text-white">
-        Multi-Chain Token Balances
+        Your Token(s) Balances
       </h2>
 
       <div style={{

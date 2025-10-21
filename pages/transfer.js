@@ -384,10 +384,10 @@ export default function Transfer() {
           {/* Portfolio Info from QR Code */}
           {portfolioData && (
             <div className="w-full">
-              <div className="glass-card flex flex-col justify-start p-8 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
+              <div className="glass-card flex flex-col justify-start p-4 sm:p-8 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
                 <div className="text-center">
                   <p className="text-base text-white/70 mb-3">Recipient Wallet:</p>
-                  <p className="text-6xl font-bold text-white mb-6 font-mono">{formatAddress(portfolioData.walletAddress)}</p>
+                  <p className="text-4xl sm:text-6xl font-bold text-white mb-6 font-mono break-all">{formatAddress(portfolioData.walletAddress)}</p>
                 </div>
               </div>
             </div>
