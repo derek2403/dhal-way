@@ -28,9 +28,35 @@ export default function Transfer() {
   const [portfolioData, setPortfolioData] = useState(null);
   
   // Payment amount configuration - user specified
-  const [paymentAmount, setPaymentAmount] = useState(''); // User input amount
+  const [paymentAmount, setPaymentAmount] = useState('0.00'); // User input amount (formatted as dollars.cents)
   const [isAmountSet, setIsAmountSet] = useState(false); // Track if amount is confirmed
   const [showScanner, setShowScanner] = useState(false); // Show QR scanner modal
+
+  // Handle payment amount input like a money keypad (adds digits as cents)
+  const handlePaymentAmountChange = (e) => {
+    const value = e.target.value;
+    
+    // Only allow digits
+    const digitsOnly = value.replace(/\D/g, '');
+    
+    // Convert to number (cents) then to dollars
+    const cents = parseInt(digitsOnly || '0', 10);
+    const dollars = (cents / 100).toFixed(2);
+    
+    setPaymentAmount(dollars);
+  };
+
+  // Handle backspace/delete for payment amount
+  const handlePaymentAmountKeyDown = (e) => {
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+      e.preventDefault();
+      const current = paymentAmount.replace(/\D/g, '');
+      const newValue = current.slice(0, -1);
+      const cents = parseInt(newValue || '0', 10);
+      const dollars = (cents / 100).toFixed(2);
+      setPaymentAmount(dollars);
+    }
+  };
 
   // Function to fetch prices from Hermes API
   const fetchTokenPrices = async () => {
@@ -303,6 +329,13 @@ export default function Transfer() {
   }, []);
   const [merchant, setMerchant] = useState(''); // Merchant address for escrow
 
+  // Function to format wallet address - show first 6 and last 4 characters
+  const formatAddress = (address) => {
+    if (!address) return '';
+    if (address.length < 12) return address;
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+  };
+
   return (
     <div className="min-h-screen bg-black overflow-hidden relative">
       <div className="absolute inset-0 z-0">
@@ -350,32 +383,10 @@ export default function Transfer() {
           {/* Portfolio Info from QR Code */}
           {portfolioData && (
             <div className="w-full">
-              <div className="glass-card flex flex-col justify-start p-6 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
-                <h3 className="text-xl font-bold mb-4 text-white">Scanned Portfolio</h3>
-                <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                  <p className="text-sm text-white/70 mb-2">Recipient Wallet:</p>
-                  <p className="text-white font-mono text-sm break-all">{portfolioData.walletAddress}</p>
-                  
-                  {Object.keys(portfolioData).length > 1 && (
-                    <div className="mt-4">
-                      <p className="text-sm text-white/70 mb-2">Portfolio Allocation:</p>
-                      <div className="space-y-2">
-                        {Object.entries(portfolioData).map(([chain, tokens]) => {
-                          if (chain === 'walletAddress' || typeof tokens !== 'object') return null;
-                          return (
-                            <div key={chain} className="text-sm">
-                              <span className="text-white/90 capitalize">{chain}: </span>
-                              {Object.entries(tokens).map(([token, percentage], index, arr) => (
-                                <span key={token} className="text-white/70">
-                                  {token} ({percentage}%){index < arr.length - 1 ? ', ' : ''}
-                                </span>
-                              ))}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+              <div className="glass-card flex flex-col justify-start p-8 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
+                <div className="text-center">
+                  <p className="text-base text-white/70 mb-3">Recipient Wallet:</p>
+                  <p className="text-6xl font-bold text-white mb-6 font-mono">{formatAddress(portfolioData.walletAddress)}</p>
                 </div>
               </div>
             </div>
@@ -389,21 +400,20 @@ export default function Transfer() {
                 <div className="bg-white/5 rounded-lg p-6 border border-white/10">
                   <p className="text-sm text-white/70 mb-4">How much would you like to pay?</p>
                   <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
-                    <div className="flex-1 w-full">
-                      <label className="block text-sm text-white/70 mb-2">Amount (USD)</label>
-                      <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 text-lg">$</span>
-                        <input
-                          type="number"
-                          min="0.01"
-                          step="0.01"
-                          value={paymentAmount}
-                          onChange={(e) => setPaymentAmount(e.target.value)}
-                          placeholder="0.00"
-                          className="w-full bg-white/10 border border-white/20 rounded-lg px-4 pl-8 py-3 text-white text-lg placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/40"
-                        />
+                      <div className="flex-1 w-full">
+                        <label className="block text-sm text-white/70 mb-2">Amount (USD)</label>
+                        <div className="relative">
+                          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 text-lg">$</span>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            value={paymentAmount}
+                            onChange={handlePaymentAmountChange}
+                            onKeyDown={handlePaymentAmountKeyDown}
+                            className="w-full bg-white/10 border border-white/20 rounded-lg px-4 pl-8 py-3 text-white text-lg focus:outline-none focus:ring-2 focus:ring-white/40"
+                          />
+                        </div>
                       </div>
-                    </div>
                     <button
                       onClick={() => {
                         const amount = parseFloat(paymentAmount);
@@ -418,9 +428,14 @@ export default function Transfer() {
                       Confirm Amount
                     </button>
                   </div>
-                  {paymentAmount && parseFloat(paymentAmount) > 0 && (
+                  {parseFloat(paymentAmount) > 0 && (
                     <p className="text-sm text-white/50 mt-3">
                       You will be able to select tokens worth ${parseFloat(paymentAmount).toFixed(2)}
+                    </p>
+                  )}
+                  {parseFloat(paymentAmount) === 0 && (
+                    <p className="text-sm text-white/50 mt-3">
+                      Type numbers to enter an amount (e.g., typing "5" then "0" = $0.50)
                     </p>
                   )}
                 </div>
@@ -438,6 +453,7 @@ export default function Transfer() {
                   <button
                     onClick={() => {
                       setIsAmountSet(false);
+                      setPaymentAmount('0.00');
                       setTransferAmounts({});
                     }}
                     className="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white font-medium transition-all duration-200"
