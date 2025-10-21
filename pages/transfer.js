@@ -346,7 +346,7 @@ export default function Transfer() {
           {/* Portfolio Info from QR Code */}
           {portfolioData && (
             <div className="w-full">
-              <div className="glass-card flex flex-col justify-start p-6 relative max-w-4xl mx-auto w-full">
+              <div className="glass-card flex flex-col justify-start p-6 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
                 <h3 className="text-xl font-bold mb-4 text-white">Scanned Portfolio</h3>
                 <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                   <p className="text-sm text-white/70 mb-2">Recipient Wallet:</p>
@@ -380,7 +380,7 @@ export default function Transfer() {
           {/* Payment Amount Input - Show only after QR is scanned */}
           {portfolioData && !isAmountSet && (
             <div className="w-full">
-              <div className="glass-card flex flex-col justify-start p-6 relative max-w-4xl mx-auto w-full">
+              <div className="glass-card flex flex-col justify-start p-6 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
                 <h3 className="text-xl font-bold mb-4 text-white">Enter Payment Amount</h3>
                 <div className="bg-white/5 rounded-lg p-6 border border-white/10">
                   <p className="text-sm text-white/70 mb-4">How much would you like to pay?</p>
@@ -427,7 +427,7 @@ export default function Transfer() {
           {/* Show confirmed amount if set */}
           {isAmountSet && (
             <div className="w-full">
-              <div className="glass-card flex flex-col justify-start p-4 relative max-w-4xl mx-auto w-full">
+              <div className="glass-card flex flex-col justify-start p-4 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-white/70">Payment Amount:</p>
