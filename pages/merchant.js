@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ethers } from 'ethers'
 import { Spotlight } from '@/components/ui/spotlight-new'
+import { Header } from '../components/Header'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ChainSelector from '@/components/ChainSelector'
 import PortfolioChart from '@/components/PortfolioChart'
 import TokenGrid from '@/components/TokenGrid'
@@ -37,7 +39,7 @@ ChartJS.register({
 const MerchantPage = () => {
   const { address, isConnected } = useAccount()
   const [selectedChains, setSelectedChains] = useState({})
-  const [currentChain, setCurrentChain] = useState('sepolia')
+  const [currentChain, setCurrentChain] = useState(null)
   const [qrDataUrl, setQrDataUrl] = useState('')
   const [showTokenModal, setShowTokenModal] = useState(false)
   const [showQRModal, setShowQRModal] = useState(false)
@@ -245,7 +247,7 @@ const MerchantPage = () => {
 
   const resetSelection = () => {
     setSelectedChains({})
-    setCurrentChain('sepolia')
+    setCurrentChain(null)
     setSelectedToken('')
     setTokenAllocation(10)
     setQrDataUrl('')
@@ -302,7 +304,7 @@ const MerchantPage = () => {
 
   if (!isConnected) {
     return (
-      <div className="h-screen bg-black overflow-hidden relative">
+      <div className="h-screen bg-black overflow-x-hidden overflow-y-hidden relative">
         <Spotlight
           gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, .10) 40%, hsla(0, 0%, 100%, 0) 70%)"
           gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .18) 0, hsla(0, 0%, 100%, .08) 60%, transparent 90%)"
@@ -314,91 +316,12 @@ const MerchantPage = () => {
           duration={9}
           xOffset={120}
         />
-        <div className="relative z-10">
-          {/* Simple header with just connect button */}
-          <div className="flex justify-end pt-8 pr-16">
-            <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-2xl p-1">
-              <ConnectButton.Custom>
-                {({ account, chain, openAccountModal, openChainModal, openConnectModal, authenticationStatus, mounted }) => {
-                  const ready = mounted && authenticationStatus !== 'loading';
-                  const connected = ready && account && chain && (!authenticationStatus || authenticationStatus === 'authenticated');
-
-                  return (
-                    <div className="relative z-10">
-                      {(() => {
-                        if (!connected) {
-                          return (
-                            <button
-                              onClick={openConnectModal}
-                              type="button"
-                              className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white transition-colors rounded-lg hover:bg-white/10"
-                            >
-                              Connect Wallet
-                            </button>
-                          );
-                        }
-
-                        if (chain.unsupported) {
-                          return (
-                            <button
-                              onClick={openChainModal}
-                              type="button"
-                              className="px-4 py-2 text-sm font-medium text-red-300 hover:text-red-200 transition-colors rounded-lg hover:bg-red-500/10"
-                            >
-                              Wrong network
-                            </button>
-                          );
-                        }
-
-                        return (
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={openChainModal}
-                              type="button"
-                              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/10"
-                            >
-                              {chain.hasIcon && (
-                                <div
-                                  className="w-4 h-4 rounded-full overflow-hidden flex items-center justify-center"
-                                  style={{ background: chain.iconBackground }}
-                                >
-                                  {chain.iconUrl && (
-                                    <img
-                                      alt={chain.name ?? 'Chain icon'}
-                                      src={chain.iconUrl}
-                                      className="w-4 h-4"
-                                    />
-                                  )}
-                                </div>
-                              )}
-                              <span className="hidden sm:inline">{chain.name}</span>
-                            </button>
-
-                            <button
-                              onClick={openAccountModal}
-                              type="button"
-                              className="px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/10"
-                            >
-                              {account.displayName}
-                              {account.displayBalance && (
-                                <span className="hidden sm:inline text-white/60 ml-1">
-                                  ({account.displayBalance})
-                                </span>
-                              )}
-                            </button>
-                          </div>
-                        );
-                      })()}
-                    </div>
-                  );
-                }}
-              </ConnectButton.Custom>
-            </div>
-          </div>
-          <div className="flex items-center justify-center h-[calc(100vh-120px)]">
-            <div className="glass-card p-8 text-center">
-              <h1 className="text-2xl font-bold mb-4 text-white/90">Connect Your Wallet</h1>
-              <p className="text-white/70">Please connect your wallet to set up payment claiming preferences</p>
+        <div className="relative z-50">
+          <Header showNavigation={true} />
+          <div className="flex items-center justify-center h-[calc(100vh-120px)] px-4">
+            <div className="glass-card p-4 sm:p-6 lg:p-8 text-center max-w-sm sm:max-w-md lg:max-w-2xl w-full">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 lg:mb-6 text-white/90">Connect Your Wallet</h1>
+              <p className="text-sm sm:text-base lg:text-lg text-white/70">Please connect your wallet to set up payment claiming preferences</p>
             </div>
           </div>
         </div>
@@ -407,8 +330,8 @@ const MerchantPage = () => {
   }
 
   return (
-    <div className="h-screen bg-black overflow-hidden relative">
-      <div className="absolute inset-0 z-0">
+    <div className="min-h-screen lg:h-screen bg-black overflow-x-hidden overflow-y-auto lg:overflow-hidden relative">
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <Spotlight
           gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, .10) 40%, hsla(0, 0%, 100%, 0) 70%)"
           gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .18) 0, hsla(0, 0%, 100%, .08) 60%, transparent 90%)"
@@ -421,93 +344,105 @@ const MerchantPage = () => {
           xOffset={120}
         />
       </div>
-      <div className="relative z-10">
-        {/* Simple header with just connect button */}
-        <div className="flex justify-end pt-8 pr-16 pb-4">
-          <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-2xl p-1">
-            <ConnectButton.Custom>
-              {({ account, chain, openAccountModal, openChainModal, openConnectModal, authenticationStatus, mounted }) => {
-                const ready = mounted && authenticationStatus !== 'loading';
-                const connected = ready && account && chain && (!authenticationStatus || authenticationStatus === 'authenticated');
+      <div className="relative z-50">
+        <Header showNavigation={true} />
+        <div className="max-w-7xl mx-auto p-3 lg:h-[calc(100vh-120px)]">
 
-                return (
-                  <div className="relative z-10">
-                    {(() => {
-                      if (!connected) {
-                        return (
-                          <button
-                            onClick={openConnectModal}
-                            type="button"
-                            className="px-4 py-2 text-sm font-medium text-white/90 hover:text-white transition-colors rounded-lg hover:bg-white/10"
-                          >
-                            Connect Wallet
-                          </button>
-                        );
-                      }
-
-                      if (chain.unsupported) {
-                        return (
-                          <button
-                            onClick={openChainModal}
-                            type="button"
-                            className="px-4 py-2 text-sm font-medium text-red-300 hover:text-red-200 transition-colors rounded-lg hover:bg-red-500/10"
-                          >
-                            Wrong network
-                          </button>
-                        );
-                      }
-
-                      return (
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={openChainModal}
-                            type="button"
-                            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/10"
-                          >
-                            {chain.hasIcon && (
-                              <div
-                                className="w-4 h-4 rounded-full overflow-hidden flex items-center justify-center"
-                                style={{ background: chain.iconBackground }}
-                              >
-                                {chain.iconUrl && (
-                                  <img
-                                    alt={chain.name ?? 'Chain icon'}
-                                    src={chain.iconUrl}
-                                    className="w-4 h-4"
-                                  />
-                                )}
-                              </div>
-                            )}
-                            <span className="hidden sm:inline">{chain.name}</span>
-                          </button>
-
-                          <button
-                            onClick={openAccountModal}
-                            type="button"
-                            className="px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/10"
-                          >
-                            {account.displayName}
-                            {account.displayBalance && (
-                              <span className="hidden sm:inline text-white/60 ml-1">
-                                ({account.displayBalance})
-                              </span>
-                            )}
-                          </button>
-                        </div>
-                      );
-                    })()}
+        {/* Mobile Tab Layout - Only on mobile */}
+        <div className="lg:hidden flex flex-col">
+          <Tabs defaultValue="select" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-lg border border-white/20 mb-3">
+              <TabsTrigger value="select" className="data-[state=active]:bg-white/20 text-white/70 data-[state=active]:text-white">
+                Select Tokens
+              </TabsTrigger>
+              <TabsTrigger value="review" className="data-[state=active]:bg-white/20 text-white/70 data-[state=active]:text-white">
+                Review & QR
+              </TabsTrigger>
+            </TabsList>
+            
+            {/* Tab 1: Select Tokens - Chain Selector + Token Grid */}
+            <TabsContent value="select" className="space-y-3">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-3"
+              >
+                <ChainSelector
+                  chains={chains}
+                  currentChain={currentChain}
+                  setCurrentChain={setCurrentChain}
+                  selectedChains={selectedChains}
+                />
+                {currentChain ? (
+                  <TokenGrid
+                    chains={chains}
+                    currentChain={currentChain}
+                    tokensByChain={tokensByChain}
+                    selectedChains={selectedChains}
+                    handleTokenClick={handleTokenClick}
+                    totalAllocation={totalAllocation}
+                  />
+                ) : (
+                  <div className="glass-card p-6 text-center">
+                    <p className="text-white/70 text-sm">
+                      Select a blockchain above to view available tokens
+                    </p>
                   </div>
-                );
-              }}
-            </ConnectButton.Custom>
-          </div>
+                )}
+              </motion.div>
+            </TabsContent>
+            
+            {/* Tab 2: Review & QR - Portfolio Summary + Chart + Actions */}
+            <TabsContent value="review" className="space-y-3">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-3"
+              >
+                <AnimatePresence>
+                  {Object.keys(selectedChains).length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <PortfolioSummary
+                        selectedChains={selectedChains}
+                        chains={chains}
+                        tokensByChain={tokensByChain}
+                        totalAllocation={totalAllocation}
+                        removeToken={removeToken}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                <PortfolioChart
+                  totalAllocation={totalAllocation}
+                  chartData={chartData}
+                  chartOptions={chartOptions}
+                  generateQRCode={generateSimpleQRCode}
+                  generateDetailedQRCode={generateQRCode}
+                  resetSelection={resetSelection}
+                  selectedChains={selectedChains}
+                  chains={chains}
+                  removeToken={removeToken}
+                />
+              </motion.div>
+            </TabsContent>
+          </Tabs>
         </div>
-        <div className="max-w-7xl mx-auto p-3 h-[calc(100vh-120px)]">
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 h-full">
+        {/* Desktop Grid Layout - Only on desktop */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-3 h-full">
             {/* Left Panel - Payment Chain Selection */}
           <motion.div 
-            className="lg:col-span-1 h-full flex flex-col"
+            className="lg:col-span-1 h-full flex flex-col gap-3"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -523,7 +458,7 @@ const MerchantPage = () => {
             <AnimatePresence>
               {Object.keys(selectedChains).length > 0 && (
                 <motion.div
-                  className="flex-shrink-0 h-48"
+                  className="flex-shrink-0 h-48 overflow-hidden"
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 192 }}
                   exit={{ opacity: 0, height: 0 }}
@@ -556,6 +491,8 @@ const MerchantPage = () => {
               generateDetailedQRCode={generateQRCode}
               resetSelection={resetSelection}
               selectedChains={selectedChains}
+              chains={chains}
+              removeToken={removeToken}
             />
             </motion.div>
             
@@ -566,14 +503,22 @@ const MerchantPage = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <TokenGrid
-              chains={chains}
-              currentChain={currentChain}
-              tokensByChain={tokensByChain}
-              selectedChains={selectedChains}
-              handleTokenClick={handleTokenClick}
-              totalAllocation={totalAllocation}
-                    />
+            {currentChain ? (
+              <TokenGrid
+                chains={chains}
+                currentChain={currentChain}
+                tokensByChain={tokensByChain}
+                selectedChains={selectedChains}
+                handleTokenClick={handleTokenClick}
+                totalAllocation={totalAllocation}
+              />
+            ) : (
+              <div className="glass-card p-8 flex items-center justify-center h-full">
+                <p className="text-white/70 text-center">
+                  Select a blockchain to view available tokens
+                </p>
+              </div>
+            )}
                   </motion.div>
                 </div>
                 
