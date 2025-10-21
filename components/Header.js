@@ -1,6 +1,6 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
-import { IconHome, IconSend, IconReceipt } from "@tabler/icons-react";
+import { IconSend, IconReceipt, IconHelp } from "@tabler/icons-react";
 import { FloatingDock } from "@/components/ui/floating-dock";
 import { Menu } from "lucide-react";
 import {
@@ -16,13 +16,8 @@ import Link from 'next/link';
 // Includes logo, optional navigation dock, and wallet connect button
 export const Header = ({ showNavigation = false }) => {
   // Navigation items for the floating dock
-  // Icons updated for clarity: Home, Send/Pay, and Receipt/Receive
+  // Desktop and Mobile: Pay, Merchant, FAQ
   const navItems = [
-    {
-      title: "Home",
-      icon: <IconHome className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
-      href: "/",
-    },
     {
       title: "Pay",
       icon: <IconSend className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
@@ -32,6 +27,11 @@ export const Header = ({ showNavigation = false }) => {
       title: "Merchant",
       icon: <IconReceipt className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
       href: "/merchant",
+    },
+    {
+      title: "FAQ",
+      icon: <IconHelp className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
+      href: "/faq",
     },
   ];
 
