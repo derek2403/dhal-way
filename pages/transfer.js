@@ -31,6 +31,7 @@ export default function Transfer() {
   const [paymentAmount, setPaymentAmount] = useState('0.00'); // User input amount (formatted as dollars.cents)
   const [isAmountSet, setIsAmountSet] = useState(false); // Track if amount is confirmed
   const [showScanner, setShowScanner] = useState(false); // Show QR scanner modal
+  const [showAmountModal, setShowAmountModal] = useState(false); // Show payment amount modal
 
   // Handle payment amount input like a money keypad (adds digits as cents)
   const handlePaymentAmountChange = (e) => {
@@ -156,6 +157,7 @@ export default function Transfer() {
       const parsedData = JSON.parse(scannedData);
       setPortfolioData(parsedData);
       setShowScanner(false);
+      setShowAmountModal(true); // Show amount modal after successful scan
     } catch (error) {
       // If JSON parsing fails, try parsing as URL (detailed QR format)
       try {
@@ -165,6 +167,7 @@ export default function Transfer() {
           const parsedPortfolio = JSON.parse(decodeURIComponent(portfolioParam));
           setPortfolioData(parsedPortfolio);
           setShowScanner(false);
+          setShowAmountModal(true); // Show amount modal after successful scan
         } else {
           alert('Invalid QR code format. Please scan a valid merchant QR code.');
         }
@@ -182,6 +185,7 @@ export default function Transfer() {
         const decodedData = decodeURIComponent(router.query.portfolio);
         const parsedPortfolio = JSON.parse(decodedData);
         setPortfolioData(parsedPortfolio);
+        setShowAmountModal(true); // Show amount modal when loading from URL
       } catch (error) {
         console.error('Error parsing portfolio data from URL:', error);
       }
@@ -199,9 +203,9 @@ export default function Transfer() {
     return () => clearInterval(interval);
   }, []);
 
-  // Effect to lock/unlock body scroll when scanner modal is open
+  // Effect to lock/unlock body scroll when scanner or amount modal is open
   useEffect(() => {
-    if (showScanner) {
+    if (showScanner || showAmountModal) {
       // Disable scrolling when modal is open
       document.body.style.overflow = 'hidden';
     } else {
@@ -213,7 +217,7 @@ export default function Transfer() {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [showScanner]);
+  }, [showScanner, showAmountModal]);
 
   // Make RainbowKit modal use a full-page blurred overlay on this page
   useEffect(() => {
@@ -392,56 +396,6 @@ export default function Transfer() {
             </div>
           )}
 
-          {/* Payment Amount Input - Show only after QR is scanned */}
-          {portfolioData && !isAmountSet && (
-            <div className="w-full">
-              <div className="glass-card flex flex-col justify-start p-6 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
-                <h3 className="text-xl font-bold mb-4 text-white">Enter Payment Amount</h3>
-                <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                  <p className="text-sm text-white/70 mb-4">How much would you like to pay?</p>
-                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
-                      <div className="flex-1 w-full">
-                        <label className="block text-sm text-white/70 mb-2">Amount (USD)</label>
-                        <div className="relative">
-                          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 text-lg">$</span>
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            value={paymentAmount}
-                            onChange={handlePaymentAmountChange}
-                            onKeyDown={handlePaymentAmountKeyDown}
-                            className="w-full bg-white/10 border border-white/20 rounded-lg px-4 pl-8 py-3 text-white text-lg focus:outline-none focus:ring-2 focus:ring-white/40"
-                          />
-                        </div>
-                      </div>
-                    <button
-                      onClick={() => {
-                        const amount = parseFloat(paymentAmount);
-                        if (!amount || amount <= 0) {
-                          alert('Please enter a valid payment amount');
-                          return;
-                        }
-                        setIsAmountSet(true);
-                      }}
-                      className="px-6 py-3 bg-white/20 hover:bg-white/30 border border-white/30 rounded-lg text-white font-semibold transition-all duration-200 whitespace-nowrap"
-                    >
-                      Confirm Amount
-                    </button>
-                  </div>
-                  {parseFloat(paymentAmount) > 0 && (
-                    <p className="text-sm text-white/50 mt-3">
-                      You will be able to select tokens worth ${parseFloat(paymentAmount).toFixed(2)}
-                    </p>
-                  )}
-                  {parseFloat(paymentAmount) === 0 && (
-                    <p className="text-sm text-white/50 mt-3">
-                      Type numbers to enter an amount (e.g., typing "5" then "0" = $0.50)
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Show confirmed amount if set */}
           {isAmountSet && (
@@ -452,9 +406,7 @@ export default function Transfer() {
                   <p className="text-6xl font-bold text-white mb-6">${parseFloat(paymentAmount).toFixed(2)}</p>
                   <button
                     onClick={() => {
-                      setIsAmountSet(false);
-                      setPaymentAmount('0.00');
-                      setTransferAmounts({});
+                      setShowAmountModal(true);
                     }}
                     className="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white font-medium transition-all duration-200"
                   >
@@ -526,6 +478,68 @@ export default function Transfer() {
                   className="px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white text-sm font-medium transition-all duration-200 hover:scale-105"
                 >
                   Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Amount Modal */}
+      {showAmountModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          {/* Enhanced Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/85 backdrop-blur-md"
+            onClick={() => setShowAmountModal(false)}
+          />
+          
+          {/* Modal Container */}
+          <div className="relative z-10 w-full max-w-md">
+            <div className="glass-card p-6 border-2 border-white/20 shadow-2xl">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-white">Enter Payment Amount</h3>
+                <button
+                  onClick={() => setShowAmountModal(false)}
+                  className="text-white/70 hover:text-white hover:bg-white/10 transition-all text-2xl leading-none w-9 h-9 rounded-lg flex items-center justify-center"
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
+              
+              {/* Content */}
+              <div className="bg-white/5 rounded-lg p-6 border border-white/10">
+                <div className="mb-6">
+                  <label className="block text-sm text-white/70 mb-2">Amount (USD)</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 text-lg">$</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={paymentAmount}
+                      onChange={handlePaymentAmountChange}
+                      onKeyDown={handlePaymentAmountKeyDown}
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 pl-8 py-3 text-white text-lg focus:outline-none focus:ring-2 focus:ring-white/40"
+                      autoFocus
+                    />
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    const amount = parseFloat(paymentAmount);
+                    if (!amount || amount <= 0) {
+                      alert('Please enter a valid payment amount');
+                      return;
+                    }
+                    setIsAmountSet(true);
+                    setShowAmountModal(false);
+                  }}
+                  className="w-full px-6 py-3 bg-white/20 hover:bg-white/30 border border-white/30 rounded-lg text-white font-semibold transition-all duration-200"
+                >
+                  Confirm Amount
                 </button>
               </div>
             </div>
