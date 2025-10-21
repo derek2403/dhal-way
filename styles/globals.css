@@ -437,19 +437,25 @@ div[data-rk] div[role="dialog"] * {
 /* QR Scanner Styling - Premium glass-card design */
 #qr-reader {
   border-radius: 16px;
-  overflow: visible;
+  overflow: hidden !important;
   border: none;
   background: transparent;
   width: 100%;
   max-width: 450px;
   margin: 0 auto;
   min-height: 0 !important;
+  display: block !important;
+  position: relative;
+  isolation: isolate;
 }
 
 /* Remove all top padding/margin from scanner */
-#qr-reader > div:first-child {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
+#qr-reader > div {
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 /* Main scanner container - Constrained size */
@@ -474,17 +480,30 @@ div[data-rk] div[role="dialog"] * {
   min-height: 0 !important;
 }
 
-/* Style the video element - Fixed size and centered */
+/* Style ALL video elements in scanner - Fixed size and centered */
 #qr-reader video {
   border-radius: 12px !important;
   width: 100% !important;
   height: auto !important;
   max-height: 400px !important;
+  max-width: 100% !important;
   object-fit: contain !important;
   border: 2px solid rgba(255, 255, 255, 0.15) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
   display: block !important;
   margin: 0 auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  left: 0 !important;
+  top: 0 !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+}
+
+/* Canvas overlay for scanning box in direct mode */
+#qr-reader canvas {
+  display: none !important;
 }
 
 /* Camera selection section - Clean and compact */
