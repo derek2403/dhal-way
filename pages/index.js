@@ -137,7 +137,7 @@ export default function LandingPage() {
         </div>
 
         {/* Payment Cards - Shows example of user paying vs merchant receiving */}
-        <div className="pointer-events-none absolute top-[28%] sm:top-[22%] lg:bottom-0 left-0 right-0 flex items-center justify-center lg:pb-20 pb-2 sm:pb-4">
+        <div className="pointer-events-none absolute top-[28%] sm:top-[24%] lg:bottom-0 left-0 right-0 flex items-center justify-center lg:pb-20 pb-2 sm:pb-4">
           <div className="flex flex-col items-center gap-1.5 sm:gap-2.5 max-w-4xl w-full px-2 sm:px-4 mb-8 sm:mb-12 lg:mb-0">
             {/* Payment Cards Container */}
             <div className="flex gap-1.5 sm:gap-3 lg:gap-6 flex-col lg:flex-row w-full max-w-4xl justify-center">
