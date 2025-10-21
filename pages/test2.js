@@ -18,6 +18,7 @@ export default function EnhancedPaymentDemo() {
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
+  const [flashblocksTime, setFlashblocksTime] = useState(null);
 
   // Available chains and tokens
   const chains = [
@@ -377,11 +378,33 @@ export default function EnhancedPaymentDemo() {
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                 <h3 className="text-white font-bold text-xl mb-4">📊 Payment Results</h3>
                 
+                {/* Flashblocks Banner */}
+                {results.steps?.some(step => step.flashblocksTime) && (
+                  <div className="mb-4 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/50 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">⚡</span>
+                      <p className="text-white font-bold">Flashblocks Enabled</p>
+                    </div>
+                    <p className="text-white/80 text-sm">
+                      Ultra-fast 200ms confirmations on Base Sepolia
+                    </p>
+                  </div>
+                )}
+                
                 <div className="space-y-4">
                   {results.steps?.map((step, idx) => (
                     <div key={idx} className="bg-white/5 rounded p-3">
                       <p className="text-white text-sm font-semibold">{step.description}</p>
                       <p className="text-white/70 text-xs mt-1">{step.status}</p>
+                      
+                      {/* Show Flashblocks timing */}
+                      {step.flashblocksTime && (
+                        <div className="mt-2 p-2 bg-blue-500/10 border border-blue-500/30 rounded">
+                          <p className="text-blue-300 text-xs">
+                            ⚡ Flashblocks: {step.flashblocksTime}
+                          </p>
+                        </div>
+                      )}
                       
                       {step.phase === 'bridging' && step.layerZeroUrl && (
                         <a href={step.layerZeroUrl} target="_blank" rel="noopener noreferrer" className="text-green-400 text-xs hover:underline block mt-1">

@@ -929,6 +929,19 @@ export default function Transfer() {
                 </button>
               </div>
               
+              {/* Flashblocks Banner */}
+              {paymentResults.steps?.some(step => step.flashblocksTime) && (
+                <div className="mb-4 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-2xl">⚡</span>
+                    <p className="text-white font-bold">Flashblocks Enabled</p>
+                  </div>
+                  <p className="text-white/80 text-sm">
+                    Merchant received payment with ultra-fast 200ms confirmations on Base!
+                  </p>
+                </div>
+              )}
+              
               {/* Results Content */}
               <div className="space-y-3">
                 {paymentResults.steps?.map((step, idx) => (
@@ -952,6 +965,15 @@ export default function Transfer() {
                         {step.phase === 'waiting' && <span className="text-2xl">⏳</span>}
                       </div>
                     </div>
+                    
+                    {/* Flashblocks Timing */}
+                    {step.flashblocksTime && (
+                      <div className="mt-3 p-2 bg-blue-500/10 border border-blue-500/30 rounded">
+                        <p className="text-blue-300 text-xs">
+                          ⚡ Flashblocks: {step.flashblocksTime}
+                        </p>
+                      </div>
+                    )}
                     
                     {/* Substeps */}
                     {step.substeps && step.substeps.length > 0 && (
