@@ -7,6 +7,7 @@ import AtomicTransfer from '../components/AtomicTransfer';
 import TokenBalance from '../components/TokenBalance';
 import AtomicEscrowTransfer from '../components/AtomicEscrowTransfer';
 import QRScanner from '../components/QRScanner';
+import { ScanLine } from 'lucide-react';
 
 // Pyth price feed IDs mapping
 const PYTH_PRICE_IDS = {
@@ -327,19 +328,22 @@ export default function Transfer() {
         <div className={!isConnected ? '' : 'space-y-4 sm:space-y-5'}>
           {/* Prompt to scan QR code if no portfolio data */}
           {!portfolioData && isConnected && (
-            <div className="w-full">
-              <div className="glass-card flex flex-col justify-start p-6 sm:p-8 relative max-w-2xl mx-auto w-full text-center">
-                <h3 className="text-2xl font-bold mb-4 text-white">Scan QR Code to Start Payment</h3>
-                <p className="text-white/70 mb-6">
-                  Please scan the QR code from the merchant to begin selecting your payment tokens.
-                </p>
-                <button
-                  onClick={() => setShowScanner(true)}
-                  className="mx-auto px-8 py-4 bg-white/20 hover:bg-white/30 border border-white/30 rounded-lg text-white font-semibold transition-all duration-200 text-lg"
-                >
-                  Open QR Scanner
-                </button>
-              </div>
+            <div className="w-full flex justify-center">
+              <button
+                onClick={() => setShowScanner(true)}
+                className="glass-card p-12 hover:bg-white/10 transition-all duration-300 cursor-pointer group relative overflow-hidden border-2 border-white/20 hover:border-white/40"
+                style={{ maxWidth: '220px' }}
+              >
+                <div className="relative z-10 flex flex-col items-center">
+                  <ScanLine 
+                    className="w-32 h-32 text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-300" 
+                    strokeWidth={1.5}
+                  />
+                  <p className="text-white/70 group-hover:text-white/90 text-sm mt-4 font-medium transition-all duration-300">
+                    Scan QR Code
+                  </p>
+                </div>
+              </button>
             </div>
           )}
 
