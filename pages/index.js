@@ -128,7 +128,7 @@ export default function LandingPage() {
         <div className="pointer-events-none absolute top-[12%] sm:top-[14%] lg:top-[16%] left-0 right-0 flex items-center justify-center z-30 px-4">
           <TextGenerateEffect 
             words="Any tokens.|Any chains.|Both ways."
-            className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-black text-center max-w-4xl leading-tight text-white"
+            className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-black text-center max-w-4xl leading-tight text-white"
             duration={0.5}
             filter={true}
             staggerDelay={0.5}
@@ -137,7 +137,7 @@ export default function LandingPage() {
         </div>
 
         {/* Payment Cards - Shows example of user paying vs merchant receiving */}
-        <div className="pointer-events-none absolute top-[20%] sm:top-[22%] lg:bottom-0 left-0 right-0 flex items-center justify-center lg:pb-20 pb-2 sm:pb-4">
+        <div className="pointer-events-none absolute top-[28%] sm:top-[22%] lg:bottom-0 left-0 right-0 flex items-center justify-center lg:pb-20 pb-2 sm:pb-4">
           <div className="flex flex-col items-center gap-1.5 sm:gap-2.5 max-w-4xl w-full px-2 sm:px-4 mb-8 sm:mb-12 lg:mb-0">
             {/* Payment Cards Container */}
             <div className="flex gap-1.5 sm:gap-3 lg:gap-6 flex-col lg:flex-row w-full max-w-4xl justify-center">
