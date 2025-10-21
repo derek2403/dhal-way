@@ -368,17 +368,14 @@ export default function Transfer() {
             <div className="w-full flex justify-center">
               <button
                 onClick={() => setShowScanner(true)}
-                className="glass-card p-12 hover:bg-white/10 transition-all duration-300 cursor-pointer group relative overflow-hidden border-2 border-white/20 hover:border-white/40"
-                style={{ maxWidth: '220px' }}
+                className="glass-card p-12 hover:bg-white/10 transition-all duration-300 cursor-pointer group relative overflow-hidden border-2 border-white/20 hover:border-white/40 aspect-square"
+                style={{ width: '220px', height: '220px' }}
               >
-                <div className="relative z-10 flex flex-col items-center">
+                <div className="relative z-10 flex items-center justify-center h-full">
                   <ScanLine 
                     className="w-32 h-32 text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-300" 
                     strokeWidth={1.5}
                   />
-                  <p className="text-white/70 group-hover:text-white/90 text-sm mt-4 font-medium transition-all duration-300">
-                    Scan QR Code
-                  </p>
                 </div>
               </button>
             </div>
