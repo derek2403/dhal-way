@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useAccount } from 'wagmi';
+import { useAccount, useSignTypedData } from 'wagmi';
 import { Header } from '../components/Header';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import AtomicTransfer from '../components/AtomicTransfer';
@@ -20,7 +20,8 @@ const PYTH_PRICE_IDS = {
 
 export default function Transfer() {
   const router = useRouter();
-  const { isConnected } = useAccount();
+  const { address, isConnected, chainId: connectedChainId } = useAccount();
+  const { signTypedDataAsync } = useSignTypedData();
   const [transferAmounts, setTransferAmounts] = useState({});
   const [tokenPrices, setTokenPrices] = useState({});
   const [pricesLoading, setPricesLoading] = useState(true);
@@ -32,6 +33,13 @@ export default function Transfer() {
   const [isAmountSet, setIsAmountSet] = useState(false); // Track if amount is confirmed
   const [showScanner, setShowScanner] = useState(false); // Show QR scanner modal
   const [showAmountModal, setShowAmountModal] = useState(false); // Show payment amount modal
+  
+  // Payment execution state
+  const [sessionId, setSessionId] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState('');
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentResults, setPaymentResults] = useState(null);
+  const [showResultsModal, setShowResultsModal] = useState(false);
 
   // Handle payment amount input like a money keypad (adds digits as cents)
   const handlePaymentAmountChange = (e) => {
@@ -333,6 +341,316 @@ export default function Transfer() {
   }, []);
   const [merchant, setMerchant] = useState(''); // Merchant address for escrow
 
+  // Chain name mapping (frontend chain names to backend chain keys)
+  const chainMapping = {
+    'sepolia': 'sepolia',
+    'base': 'base-sepolia',
+    'arbitrum': 'arbitrum-sepolia',
+    'optimism': 'optimism-sepolia',
+    'flow': 'flow-testnet',
+  };
+
+  // Convert transferAmounts (format: "TOKEN_CHAINID") to userPayments format
+  const convertToUserPayments = () => {
+    const payments = [];
+    
+    Object.entries(transferAmounts).forEach(([key, amount]) => {
+      if (amount > 0) {
+        const [tokenSymbol, chainIdStr] = key.split('_');
+        const chainId = parseInt(chainIdStr);
+        
+        // Map chainId to chain name
+        let chainKey = '';
+        if (chainId === 11155111) chainKey = 'sepolia';
+        else if (chainId === 84532) chainKey = 'base-sepolia';
+        else if (chainId === 421614) chainKey = 'arbitrum-sepolia';
+        else if (chainId === 11155420) chainKey = 'optimism-sepolia';
+        else if (chainId === 545) chainKey = 'flow-testnet';
+        
+        if (chainKey) {
+          const tokenPrice = tokenPrices[tokenSymbol]?.price || 0;
+          const usdValue = (amount * tokenPrice).toFixed(2);
+          
+          payments.push({
+            chain: chainKey,
+            token: tokenSymbol,
+            usdValue: usdValue,
+          });
+        }
+      }
+    });
+    
+    return payments;
+  };
+
+  // Convert merchant portfolio allocation to merchantPayouts format
+  const convertToMerchantPayouts = () => {
+    if (!portfolioData) return [];
+    
+    const payouts = [];
+    const totalAmount = parseFloat(paymentAmount) || 0;
+    
+    // Collect all payouts first to handle rounding correctly
+    const rawPayouts = [];
+    Object.entries(portfolioData).forEach(([chainName, tokens]) => {
+      if (chainName === 'walletAddress') return;
+      
+      // Map frontend chain name to backend chain key
+      const chainKey = chainMapping[chainName];
+      if (!chainKey) return;
+      
+      // Iterate through tokens in this chain
+      Object.entries(tokens).forEach(([tokenSymbol, percentage]) => {
+        const exactValue = (totalAmount * percentage) / 100;
+        
+        rawPayouts.push({
+          chain: chainKey,
+          token: tokenSymbol,
+          exactValue: exactValue,
+          percentage: percentage,
+        });
+      });
+    });
+    
+    // Round values and adjust last item to ensure total matches exactly
+    let runningTotal = 0;
+    rawPayouts.forEach((payout, index) => {
+      if (index === rawPayouts.length - 1) {
+        // Last item: use remaining amount to avoid rounding errors
+        const remaining = totalAmount - runningTotal;
+        payouts.push({
+          chain: payout.chain,
+          token: payout.token,
+          usdValue: remaining.toFixed(2),
+        });
+      } else {
+        // Regular rounding for other items
+        const rounded = Math.floor(payout.exactValue * 100) / 100; // Floor to 2 decimals
+        runningTotal += rounded;
+        payouts.push({
+          chain: payout.chain,
+          token: payout.token,
+          usdValue: rounded.toFixed(2),
+        });
+      }
+    });
+    
+    return payouts;
+  };
+
+  // Execute payment with EIP-712 signature
+  const executePayment = async () => {
+    if (!address || !isConnected) {
+      setPaymentStatus('Please connect your wallet');
+      return;
+    }
+
+    if (!connectedChainId) {
+      setPaymentStatus('Please connect to a supported network (Sepolia, Arbitrum, Base, Optimism, or Flow)');
+      return;
+    }
+
+    if (!portfolioData || !portfolioData.walletAddress) {
+      setPaymentStatus('Please scan merchant QR code first');
+      return;
+    }
+
+    const userPayments = convertToUserPayments();
+    const merchantPayouts = convertToMerchantPayouts();
+    
+    if (userPayments.length === 0) {
+      setPaymentStatus('Please select tokens to pay with');
+      return;
+    }
+
+    if (merchantPayouts.length === 0) {
+      setPaymentStatus('Invalid merchant allocation data');
+      return;
+    }
+
+    // Calculate totals
+    const userTotal = userPayments.reduce((sum, p) => sum + parseFloat(p.usdValue), 0);
+    const merchantTotal = merchantPayouts.reduce((sum, p) => sum + parseFloat(p.usdValue), 0);
+
+    // Check if totals match
+    if (Math.abs(userTotal - merchantTotal) > 0.01) {
+      setPaymentStatus(`❌ Payment mismatch: You're paying $${userTotal.toFixed(2)} but merchant expects $${merchantTotal.toFixed(2)}`);
+      return;
+    }
+
+    setPaymentLoading(true);
+    setPaymentStatus('Creating payment session with EIP-712 signature...');
+
+    try {
+      // Get chain name for user feedback
+      const chainNames = {
+        11155111: 'Sepolia',
+        421614: 'Arbitrum Sepolia',
+        84532: 'Base Sepolia',
+        11155420: 'Optimism Sepolia',
+        545: 'Flow Testnet',
+      };
+      const currentChainName = chainNames[connectedChainId] || `Chain ${connectedChainId}`;
+
+      // EIP-712 Typed Data - Use currently connected chainId
+      const domain = {
+        name: 'Dhalway Payment Protocol',
+        version: '1',
+        chainId: connectedChainId || 84532, // Use connected chain, fallback to Base Sepolia
+      };
+
+      console.log('Signing on chain:', currentChainName, 'ChainId:', connectedChainId);
+
+      // Contract addresses by chain (same as test2.js)
+      const contracts = {
+        'arbitrum-sepolia': {
+          tokens: { 
+            'USDC': '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d', 
+            'ETH': '0x980B62Da83eFf3D4576C647993b0c1D7faf17c73',
+            'LINK': '0xb1D4538B4571d411F07960EF2838Ce337FE1E80E',
+          },
+          vault: '0x05fF0c6Da0a07960977D8629A748F71b6117e6ea',
+        },
+        'base-sepolia': {
+          tokens: { 
+            'USDC': '0x036CbD53842c5426634e7929541eC2318f3dCF7e', 
+            'ETH': '0x4200000000000000000000000000000000000006' 
+          },
+          vault: '0xaeD23b0F0a11d8169a1711b37B2E07203b18F36F',
+        },
+        'flow-testnet': {
+          tokens: { 
+            'USDC': '0x356ED74eE51e4aa5f1Ce9B51329fecEF728621bc', 
+            'FLOW': '0xd3bF53DAC106A0290B0483EcBC89d40FcC961f3e' 
+          },
+          vault: '0xFc199a0ad172B8cAFF2a1e0cdAB022f9B62928e9',
+        },
+        'optimism-sepolia': {
+          tokens: { 
+            'USDC': '0x5fd84259d66Cd46123540766Be93DFE6D43130D7', 
+            'ETH': '0x4200000000000000000000000000000000000006' 
+          },
+          vault: '0x5aD82749A1D56BC1F11B023f0352735ea006D238',
+        },
+        'sepolia': {
+          tokens: { 
+            'USDC': '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', 
+            'ETH': '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14',
+            'PYUSD': '0xCaC524BcA292aaade2DF8A05cC58F0a65B1B3bB9',
+            'LINK': '0x779877A7B0D9E8603169DdbD7836e478b4624789',
+          },
+          vault: '0x817F2c13bDBa44D8d7E7ae0d40f28b6DC43ED30d',
+        },
+      };
+
+      // Build payment items with full details
+      const paymentItems = userPayments.map((p) => ({
+        chainKey: p.chain,
+        tokenAddress: contracts[p.chain]?.tokens[p.token] || '0x0',
+        tokenName: p.token,
+        amount: p.usdValue,
+        treasury: contracts[p.chain]?.vault || '0x0',
+      }));
+
+      const types = {
+        PaymentItem: [
+          { name: 'chainKey', type: 'string' },
+          { name: 'tokenAddress', type: 'address' },
+          { name: 'tokenName', type: 'string' },
+          { name: 'amount', type: 'string' },
+          { name: 'treasury', type: 'address' },
+        ],
+        PaymentAuthorization: [
+          { name: 'user', type: 'address' },
+          { name: 'merchant', type: 'address' },
+          { name: 'totalUSD', type: 'string' },
+          { name: 'payments', type: 'PaymentItem[]' },
+          { name: 'timestamp', type: 'uint256' },
+          { name: 'nonce', type: 'uint256' },
+        ],
+      };
+
+      const timestamp = Math.floor(Date.now() / 1000);
+      const nonce = Math.floor(Math.random() * 1000000);
+
+      const value = {
+        user: address,
+        merchant: portfolioData.walletAddress,
+        totalUSD: userTotal.toFixed(2),
+        payments: paymentItems,
+        timestamp,
+        nonce,
+      };
+
+      setPaymentStatus(`Please sign to authorize payment on ${currentChainName}...`);
+      
+      // User signs EIP-712 structured data
+      const signature = await signTypedDataAsync({
+        domain,
+        types,
+        primaryType: 'PaymentAuthorization',
+        message: value,
+      });
+
+      setPaymentStatus('✅ Signed! Creating session...');
+
+      // Create session with signature
+      const response = await fetch('/api/session/create-eip712', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userAddress: address,
+          merchantAddress: portfolioData.walletAddress,
+          signature,
+          typedData: { domain, types, value },
+          userPayments,
+          merchantPayouts,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setSessionId(data.sessionId);
+      setPaymentStatus('✅ Signature verified! Executing payment...');
+
+      // Execute payment
+      const executeResponse = await fetch('/api/payment/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: data.sessionId,
+          userPayments,
+          merchantAddress: portfolioData.walletAddress,
+          merchantPayouts,
+        }),
+      });
+
+      const executeData = await executeResponse.json();
+
+      if (executeData.error) {
+        throw new Error(executeData.error);
+      }
+
+      setPaymentResults(executeData);
+      setPaymentStatus('✅ Payment completed successfully!');
+      setShowResultsModal(true);
+
+    } catch (error) {
+      if (error.message.includes('User rejected') || error.message.includes('user rejected')) {
+        setPaymentStatus('❌ Payment cancelled - Signature rejected');
+      } else {
+        setPaymentStatus('❌ Error: ' + error.message);
+      }
+      console.error('Payment error:', error);
+    } finally {
+      setPaymentLoading(false);
+    }
+  };
+
   // Function to format wallet address - show first 6 and last 4 characters
   const formatAddress = (address) => {
     if (!address) return '';
@@ -383,11 +701,33 @@ export default function Transfer() {
 
           {/* Portfolio Info from QR Code */}
           {portfolioData && (
-            <div className="w-full">
+            <div className="w-full space-y-4">
               <div className="glass-card flex flex-col justify-start p-4 sm:p-8 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
                 <div className="text-center">
                   <p className="text-base text-white/70 mb-3">Recipient Wallet:</p>
                   <p className="text-4xl sm:text-6xl font-bold text-white mb-6 font-mono break-all">{formatAddress(portfolioData.walletAddress)}</p>
+                </div>
+              </div>
+              
+              {/* Merchant Payment Preferences */}
+              <div className="glass-card p-4 sm:p-6 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
+                <h3 className="text-white font-semibold text-lg mb-3">Merchant Payment Preferences:</h3>
+                <div className="space-y-2">
+                  {Object.entries(portfolioData).map(([chainName, tokens]) => {
+                    if (chainName === 'walletAddress') return null;
+                    return (
+                      <div key={chainName} className="bg-white/5 rounded-lg p-3 border border-white/10">
+                        <p className="text-white/90 font-medium text-sm mb-2 capitalize">{chainName}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {Object.entries(tokens).map(([tokenSymbol, percentage]) => (
+                            <div key={tokenSymbol} className="bg-white/10 px-3 py-1 rounded text-xs text-white/80">
+                              {tokenSymbol}: {percentage}%
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -428,13 +768,34 @@ export default function Transfer() {
             />
           </div>
 
-          {/* Atomic Transfer - Hide until amount is set */}
-          <div className="w-full transition-all duration-300">
-            <AtomicTransfer 
-              transferAmounts={transferAmounts}
-              isAmountSet={isAmountSet}
-            />
-          </div>
+          {/* Payment Button - Show when amount is set and tokens are selected */}
+          {isAmountSet && calculateTotalUSDValue() > 0 && (
+            <div className="w-full transition-all duration-300">
+              <div className="glass-card p-6 relative max-w-6xl mx-auto w-full" style={{ maxWidth: '1000px' }}>
+                <div className="text-center space-y-4">
+                  <p className="text-white/70 text-sm">
+                    You're paying: ${calculateTotalUSDValue().toFixed(2)}
+                  </p>
+                  <button
+                    onClick={executePayment}
+                    disabled={paymentLoading || !portfolioData}
+                    className="w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed border border-white/20 rounded-lg text-white font-bold transition-all duration-200 text-lg"
+                  >
+                    {paymentLoading ? '⏳ Processing Payment...' : '💳 Pay Now'}
+                  </button>
+                  {paymentStatus && (
+                    <div className={`mt-4 p-4 rounded-lg ${
+                      paymentStatus.includes('❌') ? 'bg-red-500/20 border border-red-500/50' :
+                      paymentStatus.includes('✅') ? 'bg-green-500/20 border border-green-500/50' :
+                      'bg-blue-500/20 border border-blue-500/50'
+                    }`}>
+                      <p className="text-white text-sm">{paymentStatus}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         </main>
       </div>
@@ -537,6 +898,128 @@ export default function Transfer() {
                   className="w-full px-6 py-3 bg-white/20 hover:bg-white/30 border border-white/30 rounded-lg text-white font-semibold transition-all duration-200"
                 >
                   Confirm Amount
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Results Modal */}
+      {showResultsModal && paymentResults && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/85 backdrop-blur-md"
+            onClick={() => setShowResultsModal(false)}
+          />
+          
+          {/* Modal Container */}
+          <div className="relative z-10 w-full max-w-3xl my-8">
+            <div className="glass-card p-6 border-2 border-white/20 shadow-2xl max-h-[80vh] overflow-y-auto">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-white">📊 Payment Results</h3>
+                <button
+                  onClick={() => setShowResultsModal(false)}
+                  className="text-white/70 hover:text-white hover:bg-white/10 transition-all text-2xl leading-none w-9 h-9 rounded-lg flex items-center justify-center"
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
+              
+              {/* Results Content */}
+              <div className="space-y-3">
+                {paymentResults.steps?.map((step, idx) => (
+                  <div key={idx} className="bg-white/5 rounded-lg p-4 border border-white/10">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <p className="text-white font-semibold text-sm mb-1">{step.description}</p>
+                        <p className={`text-xs ${
+                          step.status.includes('✅') ? 'text-green-400' :
+                          step.status.includes('❌') ? 'text-red-400' :
+                          step.status.includes('⏳') ? 'text-yellow-400' :
+                          'text-white/70'
+                        }`}>
+                          {step.status}
+                        </p>
+                      </div>
+                      <div className="ml-3">
+                        {step.phase === 'collection' && <span className="text-2xl">💰</span>}
+                        {step.phase === 'bridging' && <span className="text-2xl">🌉</span>}
+                        {step.phase === 'settlement' && <span className="text-2xl">💸</span>}
+                        {step.phase === 'waiting' && <span className="text-2xl">⏳</span>}
+                      </div>
+                    </div>
+                    
+                    {/* Substeps */}
+                    {step.substeps && step.substeps.length > 0 && (
+                      <div className="mt-3 ml-4 space-y-1">
+                        {step.substeps.map((substep, sidx) => (
+                          <p key={sidx} className="text-white/60 text-xs">• {substep}</p>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Links */}
+                    <div className="mt-3 space-y-1">
+                      {step.phase === 'bridging' && step.layerZeroUrl && (
+                        <a 
+                          href={step.layerZeroUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-green-400 text-xs hover:underline block"
+                        >
+                          🔗 Track on LayerZero Scan →
+                        </a>
+                      )}
+                      
+                      {step.explorerUrl && step.phase !== 'bridging' && (
+                        <a 
+                          href={step.explorerUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-blue-400 text-xs hover:underline block"
+                        >
+                          🔍 View on Block Explorer →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Summary */}
+              <div className="mt-6 p-4 bg-green-500/10 border border-green-500/50 rounded-lg">
+                <p className="text-green-200 font-bold text-center">
+                  ✅ Payment Completed: ${paymentResults.totalUSD?.toFixed(2) || '0.00'}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="mt-6 flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowResultsModal(false);
+                    // Reset form
+                    setTransferAmounts({});
+                    setPaymentAmount('0.00');
+                    setIsAmountSet(false);
+                    setPortfolioData(null);
+                    setPaymentStatus('');
+                    setPaymentResults(null);
+                    setSessionId(null);
+                  }}
+                  className="flex-1 px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white font-medium transition-all duration-200"
+                >
+                  🔄 New Payment
+                </button>
+                <button
+                  onClick={() => setShowResultsModal(false)}
+                  className="flex-1 px-6 py-3 bg-white/20 hover:bg-white/30 border border-white/30 rounded-lg text-white font-semibold transition-all duration-200"
+                >
+                  Close
                 </button>
               </div>
             </div>
