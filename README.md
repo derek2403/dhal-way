@@ -1047,6 +1047,4 @@ This project is licensed under the MIT License.
 
 ---
 
-**Built with ❤️ for ETHGlobal Bangkok 2024**
-
 *Making cross-chain payments as easy as scanning a QR code.*
