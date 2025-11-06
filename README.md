@@ -1037,14 +1037,6 @@ This project is licensed under the MIT License.
 - **shadcn** for beautiful UI components
 - **Aceternity UI** for animations and effects
 
-## 📞 Support & Contact
-
-- **Documentation**: [Read the Docs](./TOKENOMICS_ARCHITECTURE.md)
-- **Payment Integration Guide**: [Integration Guide](./PAYMENT_INTEGRATION.md)
-- **GitHub Issues**: [Report a Bug](https://github.com/yourusername/dhal-way/issues)
-- **Twitter**: [@DhalWay](https://twitter.com/dhalway)
-- **Discord**: [Join Community](https://discord.gg/dhalway)
-
 ---
 
 *Making cross-chain payments as easy as scanning a QR code.*
